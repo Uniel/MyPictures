@@ -27,10 +27,19 @@ namespace MyPictures
 
             int x = 0, y = 0;
             lib.GetMediaSources().ForEach(source => {
+                // Find picture grid
                 Grid Images = (Grid)this.FindName("ImageGrid");
+
+                // Create new Image element in XAML for a picture and fill in correct row/column
                 Image image = new Image { Source = source };
                 image.SetValue(Grid.RowProperty, y);
                 image.SetValue(Grid.ColumnProperty, x++);
+
+                image.MouseDown += (s,e) => {
+                    this.PreviewGrid.Visibility = Visibility.Visible;
+                    this.Preview.Source = ((Image)s).Source;
+                } ;
+
                 Images.Children.Add(image);
 
                 // Go to next column at end of rows
