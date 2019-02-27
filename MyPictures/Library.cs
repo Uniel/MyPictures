@@ -8,11 +8,12 @@ namespace MyPictures
 {
     class Library
     {
-        private readonly string DirLocation = @"C:\Users\John\Pictures\Screenshots";
+        private readonly string DirLocation = @"C:\Users\John\Pictures\Billeder";
         public List<string> GetMediaPaths()
         {
             var files = Directory.EnumerateFiles(DirLocation, "*.*", SearchOption.AllDirectories)
-            .Where(s => s.EndsWith(".png") || s.EndsWith(".jpg") || s.EndsWith(".jpeg") );
+            .Where(s => s.EndsWith(".png") || s.EndsWith(".jpg") || s.EndsWith(".jpeg"))
+            .OrderByDescending(filename => filename);
             return new List<string>(files);
         }
 

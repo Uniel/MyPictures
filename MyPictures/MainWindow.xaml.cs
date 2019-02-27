@@ -35,9 +35,18 @@ namespace MyPictures
                 image.SetValue(Grid.RowProperty, y);
                 image.SetValue(Grid.ColumnProperty, x++);
 
+                // For each image added to the grid add click event for preview
                 image.MouseDown += (s,e) => {
                     this.PreviewGrid.Visibility = Visibility.Visible;
                     this.Preview.Source = ((Image)s).Source;
+
+                    // Add click event to hide current preview
+                    this.Preview.MouseDown += (sender, exception) =>
+                    {
+                        this.PreviewGrid.Visibility = Visibility.Hidden;
+                        //this.Preview.Source = ((Image)s).Source;
+                    };
+
                 } ;
 
                 Images.Children.Add(image);
@@ -47,6 +56,11 @@ namespace MyPictures
                 {
                     x = 0;
                     y++;
+                    if (y >= 3)
+                    {
+                        // Sizing is off and images are automatically rotated?!?!
+                        Images.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto } );
+                    }
                 }
             });
 

@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <!-- Side Panel -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
@@ -15,31 +16,35 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Rectangle Fill="#34495e"/>
-        <Grid x:Name="ImageGrid" Grid.Column="1" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-        </Grid>
-
+        
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
+            <StackPanel>
+                <Grid x:Name="ImageGrid" Grid.Column="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
         <Grid x:Name="PreviewGrid"  Grid.ColumnSpan="2" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.7"/>
             </Grid.Background>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="11*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="10*"/>
+                <RowDefinition Height="11*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Image x:Name="Preview" Grid.Column="1" Grid.Row="1"/>
