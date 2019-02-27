@@ -28,7 +28,7 @@ namespace MyPictures
 
             window.InitializeComponent();
             Console.WriteLine(lib.test());
-            lib.GetImages().ForEach(Console.WriteLine);
+            lib.GetMediaPaths().ForEach(Console.WriteLine);
             //Console.WriteLine();
 
             window.Run();

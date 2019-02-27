@@ -26,9 +26,9 @@ namespace MyPictures
             MyPictures.Library lib = new MyPictures.Library();
 
             int x = 0, y = 0;
-            lib.GetImages().ForEach(path => {
+            lib.GetMediaSources().ForEach(source => {
                 Grid Images = (Grid)this.FindName("ImageGrid");
-                Image image = new Image { Source = new BitmapImage(new Uri(path, UriKind.Absolute)) };
+                Image image = new Image { Source = source };
                 image.SetValue(Grid.RowProperty, y);
                 image.SetValue(Grid.ColumnProperty, x++);
                 Images.Children.Add(image);
