@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MyPictures.Files;
 using System.Collections.Generic;
 
 namespace MyPictures.Servers
@@ -10,6 +11,8 @@ namespace MyPictures.Servers
 
         List<String> GetMediaPaths();
 
-        Stream GetFileStream(String path);
+        List<GenericMedia> GetMediaGenerics();
+
+        Stream GetMediaStream(String path);
     }
 }

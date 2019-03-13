@@ -52,6 +52,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Files\GenericImage.cs" />
+    <Compile Include="Files\GenericMedia.cs" />
     <Compile Include="Servers\IServer.cs" />
     <Compile Include="Utils\FileValidator.cs" />
     <Page Include="App.xaml">
@@ -99,5 +101,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

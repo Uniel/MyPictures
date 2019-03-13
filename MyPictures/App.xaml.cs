@@ -21,7 +21,7 @@ namespace MyPictures
         public static void Main()
         {
             String path = @"C:\Users\Andreas\Pictures";
-            Server.LocalServer server = new Server.LocalServer(path);
+            Servers.LocalServer server = new Servers.LocalServer(path);
 
             /*MyPictures.Library lib = new MyPictures.Library();
             Console.WriteLine("Test1");
