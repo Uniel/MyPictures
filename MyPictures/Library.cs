@@ -8,7 +8,7 @@ namespace MyPictures
 {
     class Library
     {
-        private readonly string DirLocation = @"C:\Users\John\Pictures\Billeder";
+        private readonly string DirLocation = @"C:\Users\Andreas\Pictures\dogs";
         public List<string> GetMediaPaths()
         {
             var files = Directory.EnumerateFiles(DirLocation, "*.*", SearchOption.AllDirectories)
