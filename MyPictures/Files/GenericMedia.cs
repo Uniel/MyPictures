@@ -13,6 +13,7 @@ namespace MyPictures.Files
         public GenericMedia(String path, IServer server)
         {
             this.path = path;
+            this.server = server;
         }
 
         public Stream Stream()
