@@ -18,10 +18,7 @@ namespace MyPictures.Files
 
         public Stream Stream()
         {
-            // TODO: Implement GenericVideo
-            return FileValidator.IsImageFile(this.path)
-                ? ((GenericImage) this).Stream()
-                : null;
+            return this.server.GetMediaStream(this.path);
         }
     }
 }

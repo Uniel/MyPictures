@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Files\GenericImage.cs" />
     <Compile Include="Files\GenericMedia.cs" />
+    <Compile Include="Files\IGenericMedia.cs" />
     <Compile Include="Servers\IServer.cs" />
     <Compile Include="Utils\FileValidator.cs" />
     <Page Include="App.xaml">

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyPictures.Servers;
+using MyPictures.Files;
 
 namespace MyPictures
 {
@@ -23,20 +25,30 @@ namespace MyPictures
         public MainWindow()
         {
             InitializeComponent();
-            MyPictures.Library lib = new MyPictures.Library();
+
+            IServer server = new LocalServer(@"C:\Users\Andreas\Pictures\dogs");
+            server.GetMediaPaths();
 
             int x = 0, y = 0;
-            lib.GetMediaSources().ForEach(source => {
-                // Find picture grid
-                Grid Images = (Grid)this.FindName("ImageGrid");
+            server.GetMediaGenerics().ForEach(generic => {
+                // Find picture grid element.
+                Grid Images = (Grid) this.FindName("ImageGrid");
+
+                // Cast generic to image and retrieve frame.
+                GenericImage source = (GenericImage)generic;
+                BitmapFrame frame = source.RetrieveFrame(0);
+
+                // Print metadata example to console.
+                Console.WriteLine(source.RetrieveMetadata(frame).Copyright);
 
                 // Create new Image element in XAML for a picture and fill in correct row/column
-                Image image = new Image { Source = source };
+                Image image = new Image { Source = frame };
                 image.SetValue(Grid.RowProperty, y);
                 image.SetValue(Grid.ColumnProperty, x++);
 
                 // For each image added to the grid add click event for preview
-                image.MouseDown += (s,e) => {
+                image.MouseDown += (s, e) => {
+                    Console.WriteLine(e);
                     this.PreviewGrid.Visibility = Visibility.Visible;
                     this.Preview.Source = ((Image)s).Source;
 
@@ -44,7 +56,6 @@ namespace MyPictures
                     this.Preview.MouseDown += (sender, exception) =>
                     {
                         this.PreviewGrid.Visibility = Visibility.Hidden;
-                        //this.Preview.Source = ((Image)s).Source;
                     };
 
                 } ;

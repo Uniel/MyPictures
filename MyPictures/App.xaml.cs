@@ -20,8 +20,10 @@ namespace MyPictures
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
         public static void Main()
         {
-            String path = @"C:\Users\Andreas\Pictures";
-            Servers.LocalServer server = new Servers.LocalServer(path);
+            MyPictures.App window = new MyPictures.App();
+ 
+            window.InitializeComponent();
+            window.Run();
 
             /*MyPictures.Library lib = new MyPictures.Library();
             Console.WriteLine("Test1");
@@ -34,7 +36,7 @@ namespace MyPictures
             lib.GetMediaPaths().ForEach(Console.WriteLine);
             //Console.WriteLine();
 
-            window.Run();*/
+           */
         }
     }
 

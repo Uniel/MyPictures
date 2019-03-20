@@ -11,7 +11,7 @@ namespace MyPictures.Servers
 
         List<String> GetMediaPaths();
 
-        List<GenericMedia> GetMediaGenerics();
+        List<GenericImage> GetMediaGenerics();
 
         Stream GetMediaStream(String path);
     }

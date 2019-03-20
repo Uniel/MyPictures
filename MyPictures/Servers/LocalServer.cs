@@ -26,14 +26,14 @@ namespace MyPictures.Servers
             return this.GetFilePaths().Where(FileValidator.IsMediaFile).ToList();
         }
 
-        public List<GenericMedia> GetMediaGenerics()
+        public List<GenericImage> GetMediaGenerics()
         {
-            return this.GetMediaPaths().Select(s => new GenericMedia(s, this)).ToList();
+            return this.GetMediaPaths().Select(s => new GenericImage(s, this)).ToList();
         }
 
         public Stream GetMediaStream(String path)
         {
-            return null; // TODO: Implement stream
+            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
     }
 }
