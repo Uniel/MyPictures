@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MyPictures.Servers;
 using MyPictures.Files;
+using MyPictures.Storage;
 
 namespace MyPictures
 {
@@ -27,7 +28,8 @@ namespace MyPictures
             InitializeComponent();
 
             IServer server = new LocalServer(@"C:\Users\John\Pictures\Billeder");
-            server.GetMediaPaths();
+            Database db = new Database();
+            db.Connect();
 
             int x = 0, y = 0;
             server.GetMediaGenerics().ForEach(generic => {
@@ -37,6 +39,9 @@ namespace MyPictures
                 // Cast generic to image and retrieve frame.
                 GenericImage source = (GenericImage)generic;
                 BitmapFrame frame = source.RetrieveFrame(0);
+
+                // Add to database
+                db.InsertMedia(source);
 
                 // Print metadata example to console.
                 Console.WriteLine(source.RetrieveMetadata(frame).DateTaken);

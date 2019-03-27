@@ -20,5 +20,10 @@ namespace MyPictures.Files
         {
             return this.server.GetMediaStream(this.path);
         }
+
+        public String GetPath ()
+        {
+            return this.path;
+        }
     }
 }
