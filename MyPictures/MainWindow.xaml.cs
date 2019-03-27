@@ -26,7 +26,7 @@ namespace MyPictures
         {
             InitializeComponent();
 
-            IServer server = new LocalServer(@"C:\Users\Andreas\Pictures\dogs");
+            IServer server = new LocalServer(@"C:\Users\John\Pictures\Billeder");
             server.GetMediaPaths();
 
             int x = 0, y = 0;
@@ -39,7 +39,7 @@ namespace MyPictures
                 BitmapFrame frame = source.RetrieveFrame(0);
 
                 // Print metadata example to console.
-                Console.WriteLine(source.RetrieveMetadata(frame).Copyright);
+                Console.WriteLine(source.RetrieveMetadata(frame).DateTaken);
 
                 // Create new Image element in XAML for a picture and fill in correct row/column
                 Image image = new Image { Source = frame };
@@ -53,7 +53,7 @@ namespace MyPictures
                     this.Preview.Source = ((Image)s).Source;
 
                     // Add click event to hide current preview
-                    this.Preview.MouseDown += (sender, exception) =>
+                    this.PreviewGrid.MouseDown += (sender, exception) =>
                     {
                         this.PreviewGrid.Visibility = Visibility.Hidden;
                     };
