@@ -31,6 +31,8 @@ namespace MyPictures
             Database db = new Database();
             db.Connect();
 
+            ThumbnailGenerator thumbnails = new ThumbnailGenerator();
+
             int x = 0, y = 0;
             server.GetMediaGenerics().ForEach(generic => {
                 // Find picture grid element.
@@ -38,13 +40,14 @@ namespace MyPictures
 
                 // Cast generic to image and retrieve frame.
                 GenericImage source = (GenericImage)generic;
-                BitmapFrame frame = source.RetrieveFrame(0);
+                //BitmapFrame frame = source.RetrieveFrame(0);
+                BitmapFrame frame = thumbnails.Generate(source);
 
                 // Add to database
                 db.InsertMedia(source);
 
                 // Print metadata example to console.
-                Console.WriteLine(source.RetrieveMetadata(frame).DateTaken);
+                Console.WriteLine(source.RetrieveMetadata(0).DateTaken);
 
                 // Create new Image element in XAML for a picture and fill in correct row/column
                 Image image = new Image { Source = frame };
