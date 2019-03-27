@@ -34,7 +34,7 @@ namespace MyPictures.Storage
         {
             string sql = "CREATE TABLE IF NOT EXISTS photos(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "name VARCHAR(255) NOT NULL," +
+                "name VARCHAR(255) NOT NULL UNIQUE," +
                 "thumbnail VARCHAR(255)," +
                 "created_at TEXT NOT NULL," +
                 "updated_at TEXT NOT NULL" +
@@ -45,6 +45,8 @@ namespace MyPictures.Storage
 
         public void InsertMedia(GenericMedia media)
         {
+            if (this.HasMedia(media.GetPath())) return;
+
             // Create command object
             SQLiteCommand command = new SQLiteCommand(null, this.connection);
 
@@ -57,17 +59,37 @@ namespace MyPictures.Storage
 
             command.Prepare();
 
+            // Get correct format for date of picture
+            String now = DateTime.Now.ToString("u");
+            String rawDate = ((GenericImage)media).RetrieveMetadata().DateTaken;
+            String date = rawDate == null ? now : DateTime.Parse(rawDate).ToString("u");
+
             command.Parameters[0].Value = media.GetPath();
             command.Parameters[1].Value = "TODO";
-
-            String now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            String rawDate = ((GenericImage)media).RetrieveMetadata().DateTaken;
-            String date = rawDate == null ? now : DateTime.Parse(rawDate).ToString("yyyy-MM-dd HH:mm:ss");
-
             command.Parameters[2].Value = date;
             command.Parameters[3].Value = now;
 
             command.ExecuteNonQuery();
+        }
+
+        public SQLiteDataReader RetrieveMedia(String path)
+        {
+            // Create command object
+            SQLiteCommand command = new SQLiteCommand(null, this.connection);
+
+            command.CommandText = "SELECT * FROM photos WHERE name = @name";
+            command.Parameters.Add(new SQLiteParameter("@name", DbType.String, 255));
+
+            command.Prepare();
+
+            command.Parameters[0].Value = path;
+
+            return command.ExecuteReader();
+        }
+
+        public Boolean HasMedia(String path)
+        {
+            return this.RetrieveMedia(path).HasRows;
         }
 
     }
