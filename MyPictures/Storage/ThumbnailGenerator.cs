@@ -1,4 +1,5 @@
 ﻿using MyPictures.Files;
+using MyPictures.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,11 +14,15 @@ namespace MyPictures.Storage
 {
     class ThumbnailGenerator
     {
+        PictureRotator Rotator = new PictureRotator();
+
         public BitmapFrame Generate(GenericMedia media)
         {
             // Create frame from first image in object to ensure a picture
             BitmapFrame frame = ((GenericImage)media).RetrieveFrame(0);
-            
+
+            frame = Rotator.RotatePicture(frame);
+
             // Scale values for width and height - ensures 1:1 ratio
             double scaleWidth = 300d / frame.PixelWidth;
             double scaleHeight = 300d / frame.PixelHeight;
