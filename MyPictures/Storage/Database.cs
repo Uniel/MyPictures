@@ -35,7 +35,9 @@ namespace MyPictures.Storage
             string sql = "CREATE TABLE IF NOT EXISTS photos(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name VARCHAR(255) NOT NULL UNIQUE," +
-                "thumbnail VARCHAR(255)," +
+                "path VARCHAR(255)," +
+                "thumbName VARCHAR(255)," +
+                "thumbDir VARCHAR(255)," +
                 "created_at TEXT NOT NULL," +
                 "updated_at TEXT NOT NULL" +
             ")";
@@ -45,15 +47,17 @@ namespace MyPictures.Storage
 
         public void InsertMedia(GenericMedia media)
         {
-            if (this.HasMedia(media.GetPath())) return;
+            if (this.HasMedia(media.GetName())) return;
 
             // Create command object
             SQLiteCommand command = new SQLiteCommand(null, this.connection);
 
             // Insert sql command into command object
-            command.CommandText = "INSERT INTO photos (name, thumbnail, created_at, updated_at) VALUES (@name, @thumbnail, @created_at, @updated_at)";
+            command.CommandText = "INSERT INTO photos (name, path, thumbName, thumbDir, created_at, updated_at) VALUES (@name, @path, @thumbName, @thumbDir, @created_at, @updated_at)";
             command.Parameters.Add(new SQLiteParameter("@name", DbType.String, 255));
-            command.Parameters.Add(new SQLiteParameter("@thumbnail", DbType.String, 255));
+            command.Parameters.Add(new SQLiteParameter("@path", DbType.String, 255));
+            command.Parameters.Add(new SQLiteParameter("@thumbName", DbType.String, 255));
+            command.Parameters.Add(new SQLiteParameter("@thumbDir", DbType.String, 255));
             command.Parameters.Add(new SQLiteParameter("@created_at", DbType.String, 255));
             command.Parameters.Add(new SQLiteParameter("@updated_at", DbType.String, 255));
 
@@ -64,10 +68,13 @@ namespace MyPictures.Storage
             String rawDate = ((GenericImage)media).RetrieveMetadata().DateTaken;
             String date = rawDate == null ? now : DateTime.Parse(rawDate).ToString("u");
 
-            command.Parameters[0].Value = media.GetPath();
-            command.Parameters[1].Value = "TODO";
-            command.Parameters[2].Value = date;
-            command.Parameters[3].Value = now;
+            command.Parameters[0].Value = media.GetName();
+            command.Parameters[1].Value = media.GetPath();
+
+            command.Parameters[2].Value = ("thumb_" + media.GetName());
+            command.Parameters[3].Value = "TODO";
+            command.Parameters[4].Value = date;
+            command.Parameters[5].Value = now;
 
             command.ExecuteNonQuery();
         }

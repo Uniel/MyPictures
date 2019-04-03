@@ -23,7 +23,14 @@ namespace MyPictures.Files
 
         public String GetPath ()
         {
-            return this.path;
+            // Find last backslash
+            int Pos = this.path.LastIndexOf("\\") + 1;
+            return this.path.Substring(0,Pos);
+        }
+
+        public String GetName()
+        {
+            return Path.GetFileName(this.path);
         }
     }
 }

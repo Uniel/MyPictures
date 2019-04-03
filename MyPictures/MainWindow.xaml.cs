@@ -30,19 +30,19 @@ namespace MyPictures
             IServer server = new LocalServer(@"C:\Users\John\Pictures\Billeder");
             Database db = new Database();
             db.Connect();
-
+            
             ThumbnailGenerator thumbnails = new ThumbnailGenerator();
 
             int x = 0, y = 0;
             server.GetMediaGenerics().ForEach(generic => {
                 // Find picture grid element.
                 Grid Images = (Grid) this.FindName("ImageGrid");
-
+                
                 // Cast generic to image and retrieve frame.
                 GenericImage source = (GenericImage)generic;
                 //BitmapFrame frame = source.RetrieveFrame(0);
                 BitmapFrame frame = thumbnails.Generate(source);
-
+                
                 // Add to database
                 db.InsertMedia(source);
 
