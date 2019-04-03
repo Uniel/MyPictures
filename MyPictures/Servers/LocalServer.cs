@@ -14,6 +14,17 @@ namespace MyPictures.Servers
 
         public LocalServer(String directory, String thumbDir = "")
         {
+            // Removes last index of directory input it's a backslash
+            if( (directory.LastIndexOf("\\") + 1) == directory.Length)
+            {
+                directory = directory.Substring(0, directory.Length - 2);
+            }
+            // Removes last index of thumbdir if it's a backslash
+            if ( ((thumbDir.LastIndexOf("\\") + 1) == thumbDir.Length) && thumbDir != "")
+            {
+                thumbDir = thumbDir.Substring(0, thumbDir.Length - 2);
+            }
+
             this.directory = directory;
             this.thumbDir = (thumbDir == "") ? (directory + "\\.thumbnails") : thumbDir;
             CreateThumbnailDirectory();
