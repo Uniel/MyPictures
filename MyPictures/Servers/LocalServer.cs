@@ -10,10 +10,13 @@ namespace MyPictures.Servers
     class LocalServer : IServer
     {
         protected String directory;
+        protected String thumbDir;
 
-        public LocalServer(String directory)
+        public LocalServer(String directory, String thumbDir = "")
         {
             this.directory = directory;
+            this.thumbDir = (thumbDir == "") ? (directory + "\\.thumbnails") : thumbDir;
+            CreateThumbnailDirectory();
         }
 
         public List<String> GetFilePaths()
@@ -34,6 +37,28 @@ namespace MyPictures.Servers
         public Stream GetMediaStream(String path)
         {
             return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        }
+
+        // Thumbnails
+        public void CreateThumbnailDirectory()
+        {
+            // If thumbnail directory does not exist
+            if (!Directory.Exists(thumbDir))
+            {
+                // Create directory and make it hidden
+                try
+                {
+                    Directory.CreateDirectory(thumbDir);
+                    DirectoryInfo DirInfo = new DirectoryInfo(thumbDir)
+                    {
+                        Attributes = FileAttributes.Hidden
+                    };
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
     }
 }
