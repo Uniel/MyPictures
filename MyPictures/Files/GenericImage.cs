@@ -25,9 +25,12 @@ namespace MyPictures.Files
         {
             // Get decoder for file stream.
             BitmapDecoder decoder = this.Decode(this.Stream());
-
+            BitmapFrame image = decoder.Frames[frame];
+            image = this.CorrectRotation(image);
+            // kald thumb ting
+            this.thumbnailGenerator.Generate(image);
             // Return passed frame index.
-            return decoder.Frames[frame];
+            return image;
         }
 
         public BitmapMetadata RetrieveMetadata(int frame = 0)

@@ -14,14 +14,10 @@ namespace MyPictures.Storage
 {
     class ThumbnailGenerator
     {
-        PictureRotator Rotator = new PictureRotator();
-
-        public BitmapFrame Generate(GenericMedia media)
+        public BitmapFrame Generate(BitmapFrame frame)
         {
             // Create frame from first image in object to ensure a picture
-            BitmapFrame frame = ((GenericImage)media).RetrieveFrame(0);
-
-            frame = Rotator.RotatePicture(frame);
+            //BitmapFrame frame = ((GenericImage)media).RetrieveFrame(0);
 
             // Scale values for width and height - ensures 1:1 ratio
             double scaleWidth = 300d / frame.PixelWidth;
@@ -43,6 +39,10 @@ namespace MyPictures.Storage
             return BitmapFrame.Create((BitmapSource)transformed);
         }
 
+        protected Boolean ThumbnailExists(String path)
+        {
+            return false;
+        }
 
     }
 }
