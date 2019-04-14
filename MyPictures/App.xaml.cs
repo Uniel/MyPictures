@@ -24,19 +24,6 @@ namespace MyPictures
  
             window.InitializeComponent();
             window.Run();
-
-            /*MyPictures.Library lib = new MyPictures.Library();
-            Console.WriteLine("Test1");
-
-            MyPictures.App window = new MyPictures.App();
-            Console.WriteLine("Test2");
-
-            window.InitializeComponent();
-            //Console.WriteLine(lib.GetMetaData());
-            lib.GetMediaPaths().ForEach(Console.WriteLine);
-            //Console.WriteLine();
-
-           */
         }
     }
 

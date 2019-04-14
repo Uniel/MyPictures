@@ -78,7 +78,7 @@ namespace MyPictures.Storage
 
             command.ExecuteNonQuery();
         }
-
+        
         public SQLiteDataReader RetrieveMedia(String path)
         {
             // Create command object

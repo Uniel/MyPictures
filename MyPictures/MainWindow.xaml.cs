@@ -25,23 +25,31 @@ namespace MyPictures
     {
         public MainWindow()
         {
+            // Initialize UI.
             InitializeComponent();
 
-            IServer server = new LocalServer(@"C:\Users\John\Pictures\Billeder");
+            // Create library and Initialize.
+            Library library = new Library();
+            library.Initialize();
+
+
+            IServer server = new LocalServer(@"C:\Users\Andreasf98\Pictures\Steam");
             Database db = new Database();
             db.Connect();
             
             ThumbnailGenerator thumbnails = new ThumbnailGenerator();
 
+            // Find picture grid element.
+            Grid Images = (Grid)this.FindName("ImageGrid");
+
             int x = 0, y = 0;
-            server.GetMediaGenerics().ForEach(generic => {
-                // Find picture grid element.
-                Grid Images = (Grid) this.FindName("ImageGrid");
+            library.GetLibrary().ForEach(generic => {
                 
                 // Cast generic to image and retrieve frame.
                 GenericImage source = (GenericImage)generic;
+
                 //BitmapFrame frame = source.RetrieveFrame(0);
-                BitmapFrame frame = thumbnails.Generate(source);
+                BitmapFrame frame = thumbnails.Generate(source.RetrieveFrame());
                 
                 // Add to database
                 db.InsertMedia(source);
