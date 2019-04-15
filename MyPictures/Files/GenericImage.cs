@@ -12,7 +12,7 @@ namespace MyPictures.Files
             //
         }
 
-        public BitmapDecoder Decode(Stream stream)
+        public override BitmapDecoder Decode(Stream stream)
         {
             return BitmapDecoder.Create(
                 stream,
@@ -21,24 +21,24 @@ namespace MyPictures.Files
             );
         }
 
-        public BitmapFrame RetrieveFrame(int frame = 0)
+        public override BitmapFrame RetrieveFrame(int frame = 0)
         {
             // Get decoder for file stream.
             BitmapDecoder decoder = this.Decode(this.Stream());
             BitmapFrame image = decoder.Frames[frame];
             image = this.CorrectRotation(image);
             // kald thumb ting
-            this.thumbnailGenerator.Generate(image);
+            this.thumbnailer.Generate(image);
             // Return passed frame index.
             return image;
         }
 
-        public BitmapMetadata RetrieveMetadata(int frame = 0)
+        public override BitmapMetadata RetrieveMetadata(int frame = 0)
         {
             return (BitmapMetadata) this.RetrieveFrame(frame).Metadata;
         }
 
-        public BitmapMetadata RetrieveMetadata(BitmapFrame frame)
+        public override BitmapMetadata RetrieveMetadata(BitmapFrame frame)
         {
             return (BitmapMetadata) frame.Metadata;
         }

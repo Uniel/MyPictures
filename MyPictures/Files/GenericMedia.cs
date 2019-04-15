@@ -7,18 +7,19 @@ using MyPictures.Storage;
 
 namespace MyPictures.Files
 {
-    class GenericMedia
+    abstract class GenericMedia : IGenericMedia
     {
         protected String path;
         protected IServer server;
 
-        protected Thumbnailer thumbnailGenerator;
+        protected Thumbnailer thumbnailer;
 
         public GenericMedia(String path, IServer server)
         {
-            this.path = path;
+            this.path = path.TrimEnd('\\');
             this.server = server;
-            this.thumbnailGenerator = new Thumbnailer();
+
+            this.thumbnailer = new Thumbnailer();
         }
 
         public Stream Stream()
@@ -26,50 +27,50 @@ namespace MyPictures.Files
             return this.server.GetMediaStream(this.path);
         }
 
-        public String GetPath ()
+        public String GetPath()
         {
-            // Find last backslash
-            int Pos = this.path.LastIndexOf("\\") + 1;
-            return this.path.Substring(0,Pos);
+            return this.path;
         }
 
         public String GetName()
         {
+            // TODO: Replace with cross server implementation.
             return Path.GetFileName(this.path);
         }
 
-        protected BitmapFrame CorrectRotation(BitmapFrame image)
+        protected BitmapFrame CorrectRotation()
         {
-            // Read the meta data of the input BitmapFrame
-            BitmapMetadata bitmapMetadata = image.Metadata as BitmapMetadata;
+            // Get the metadata from the first frame.
+            BitmapFrame frame = this.RetrieveFrame();
+            BitmapMetadata data = this.RetrieveMetadata(frame);
 
-            // If metadata exists and contains orientational data
-            if ((bitmapMetadata != null) && (bitmapMetadata.ContainsQuery("System.Photo.Orientation")))
-            {
-                // Get orientational data and rotate accordingly
-                object o = bitmapMetadata.GetQuery("System.Photo.Orientation");
+            // Get the file orientation from metadata.
+            ushort orientation = (ushort) data.GetQuery("System.Photo.Orientation");
 
-                if (o != null)
-                {
-                    //refer to http://www.impulseadventure.com/photo/exif-orientation.html for details on orientation values
-                    switch ((ushort)o)
-                    {
-                        // Case 6 is 90 degrees rotation
-                        case 6:
-                            return PictureRotator.Rotate(image, 90);
-
-                        // Case 3 is 180 degrees rotation
-                        case 3:
-                            return PictureRotator.Rotate(image, 180.0);
-
-                        // Case 8 is 270 degrees rotation
-                        case 8:
-                            return PictureRotator.Rotate(image, 270.0);
-                    }
-                }
+            // Return original if has no metadata or orientation.
+            if (data == null || orientation == 1) {
+                return frame;
             }
-            return image;
-        }
 
+            // Apply orientation change to parent based on metadata.
+            switch (orientation) {
+                case 6: return PictureRotator.Rotate(frame, 90);
+                case 3: return PictureRotator.Rotate(frame, 180);
+                case 8: return PictureRotator.Rotate(frame, 270);
+            }
+
+            // TODO: Implement rest of orientation changes.
+
+            // Return the frame if no change has been applied.
+            return frame;
+        }
+        
+        public abstract BitmapDecoder Decode(Stream stream);
+
+        public abstract BitmapFrame RetrieveFrame(int frame = 0);
+
+        public abstract BitmapMetadata RetrieveMetadata(int frame = 0);
+
+        public abstract BitmapMetadata RetrieveMetadata(BitmapFrame frame);
     }
 }
