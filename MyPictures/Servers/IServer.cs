@@ -14,7 +14,5 @@ namespace MyPictures.Servers
         List<GenericImage> GetMediaGenerics();
 
         Stream GetMediaStream(String path);
-
-        void CreateThumbnailDirectory();
     }
 }

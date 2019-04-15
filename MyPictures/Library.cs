@@ -23,8 +23,11 @@ namespace MyPictures
             // TODO: Load user server config.
 
             // Initialize local server.
-            IServer server = new LocalServer(@"C:\Users\Andreas\Pictures\dogs");
-            this.servers.Add(server);
+            LocalServer local = new LocalServer(@"C:\Users\Andreas\Pictures\dogs");
+            this.servers.Add(local);
+
+            // Create thumbnails directory on local server. 
+            local.CreateThumbnailsDirectory();
 
             // TODO: Connect to external servers.
 

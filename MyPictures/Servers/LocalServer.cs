@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using MyPictures.Files;
 using MyPictures.Utils;
 using System.Collections.Generic;
@@ -10,24 +11,12 @@ namespace MyPictures.Servers
     class LocalServer : IServer
     {
         protected String directory;
-        protected String thumbDir;
+        protected String thumbnails = "\\.thumbnails";
 
-        public LocalServer(String directory, String thumbDir = "")
+        public LocalServer(String directory)
         {
-            // Removes last index of directory input it's a backslash
-            if( (directory.LastIndexOf("\\") + 1) == directory.Length)
-            {
-                directory = directory.Substring(0, directory.Length - 2);
-            }
-            // Removes last index of thumbdir if it's a backslash
-            if ( ((thumbDir.LastIndexOf("\\") + 1) == thumbDir.Length) && thumbDir != "")
-            {
-                thumbDir = thumbDir.Substring(0, thumbDir.Length - 2);
-            }
-
-            this.directory = directory;
-            this.thumbDir = (thumbDir == "") ? (directory + "\\.thumbnails") : thumbDir;
-            CreateThumbnailDirectory();
+            // Trim ending backslash from directory and save.
+            this.directory = directory.TrimEnd('\\');
         }
 
         public List<String> GetFilePaths()
@@ -49,24 +38,26 @@ namespace MyPictures.Servers
         {
             return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
-
-        // Thumbnails
-        public void CreateThumbnailDirectory()
+ 
+        public void CreateThumbnailsDirectory()
         {
-            // If thumbnail directory does not exist
-            if (!Directory.Exists(thumbDir))
+            // Find thumbnails directory based on base.
+            string directory = this.directory + this.thumbnails;
+
+            // Check if thumbnail directory does not exist.
+            if (! Directory.Exists(directory))
             {
-                // Create directory and make it hidden
-                try
-                {
-                    Directory.CreateDirectory(thumbDir);
-                    DirectoryInfo DirInfo = new DirectoryInfo(thumbDir)
-                    {
+                try {
+                    // Create new directory.
+                    Directory.CreateDirectory(directory);
+
+                    // Mark the directory as hidden.
+                    DirectoryInfo DirInfo = new DirectoryInfo(directory) {
                         Attributes = FileAttributes.Hidden
                     };
-                }
-                catch (Exception)
-                {
+                } catch (Exception) {
+                    // Show failed thumnail initialization warning.
+                    MessageBox.Show("Failed to create thumbnails directory!", "Initialization Failed");
                     throw;
                 }
             }
