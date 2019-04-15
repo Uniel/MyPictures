@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace MyPictures.Storage
 {
-    class ThumbnailGenerator
+    class Thumbnailer
     {
         public BitmapFrame Generate(BitmapFrame frame)
         {

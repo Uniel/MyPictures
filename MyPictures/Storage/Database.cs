@@ -1,5 +1,4 @@
-﻿using MyPictures.Files;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,6 +6,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
+using MyPictures.Files;
 using System.Threading.Tasks;
 
 
@@ -45,6 +45,21 @@ namespace MyPictures.Storage
             new SQLiteCommand(sql, this.connection).ExecuteNonQuery();
         }
 
+        public void DeleteID(int id)
+        {
+            // Create command object.
+            SQLiteCommand cmd = new SQLiteCommand(null, this.connection);
+
+            // Set query and add prepared id parameter.
+            cmd.CommandText = "DELETE FROM photos WHERE id = @id";
+            cmd.Parameters.Add(new SQLiteParameter("@id"));
+            cmd.Prepare();
+
+            // Set query id and execute.
+            cmd.Parameters[0].Value = id;
+            cmd.ExecuteNonQuery();
+        }
+
         public void InsertMedia(GenericMedia media)
         {
             if (this.HasMedia(media.GetName())) return;
@@ -78,7 +93,18 @@ namespace MyPictures.Storage
 
             command.ExecuteNonQuery();
         }
-        
+
+        public SQLiteDataReader RetrieveMedia()
+        {
+            // Create command object
+            SQLiteCommand command = new SQLiteCommand(null, this.connection);
+
+            command.CommandText = "SELECT * FROM photos";
+            command.Prepare();
+
+            return command.ExecuteReader();
+        }
+
         public SQLiteDataReader RetrieveMedia(String path)
         {
             // Create command object

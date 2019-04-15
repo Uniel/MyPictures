@@ -12,13 +12,13 @@ namespace MyPictures.Files
         protected String path;
         protected IServer server;
 
-        protected ThumbnailGenerator thumbnailGenerator;
+        protected Thumbnailer thumbnailGenerator;
 
         public GenericMedia(String path, IServer server)
         {
             this.path = path;
             this.server = server;
-            this.thumbnailGenerator = new ThumbnailGenerator();
+            this.thumbnailGenerator = new Thumbnailer();
         }
 
         public Stream Stream()

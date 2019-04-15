@@ -32,39 +32,19 @@ namespace MyPictures
             Library library = new Library();
             library.Initialize();
 
-
-            IServer server = new LocalServer(@"C:\Users\Andreasf98\Pictures\Steam");
-            Database db = new Database();
-            db.Connect();
-            
-            ThumbnailGenerator thumbnails = new ThumbnailGenerator();
-
             // Find picture grid element.
             Grid Images = (Grid)this.FindName("ImageGrid");
 
+            // TODO
             int x = 0, y = 0;
             library.GetLibrary().ForEach(generic => {
-                
-                // Cast generic to image and retrieve frame.
-                GenericImage source = (GenericImage)generic;
-
-                //BitmapFrame frame = source.RetrieveFrame(0);
-                BitmapFrame frame = thumbnails.Generate(source.RetrieveFrame());
-                
-                // Add to database
-                db.InsertMedia(source);
-
-                // Print metadata example to console.
-                Console.WriteLine(source.RetrieveMetadata(0).DateTaken);
-
                 // Create new Image element in XAML for a picture and fill in correct row/column
-                Image image = new Image { Source = frame };
+                Image image = new Image { Source = ((GenericImage) generic).RetrieveFrame() };
                 image.SetValue(Grid.RowProperty, y);
                 image.SetValue(Grid.ColumnProperty, x++);
 
                 // For each image added to the grid add click event for preview
                 image.MouseDown += (s, e) => {
-                    Console.WriteLine(e);
                     this.PreviewGrid.Visibility = Visibility.Visible;
                     this.Preview.Source = ((Image)s).Source;
 
@@ -74,23 +54,22 @@ namespace MyPictures
                         this.PreviewGrid.Visibility = Visibility.Hidden;
                     };
 
-                } ;
+                };
 
                 Images.Children.Add(image);
 
                 // Go to next column at end of rows
-                if(x == Images.ColumnDefinitions.Count)
+                if (x == Images.ColumnDefinitions.Count)
                 {
                     x = 0;
                     y++;
                     if (y >= 3)
                     {
                         // Sizing is off and images are automatically rotated?!?!
-                        Images.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto } );
+                        Images.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                     }
                 }
             });
-
         }
     }
 }
