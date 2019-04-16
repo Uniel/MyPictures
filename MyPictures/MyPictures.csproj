@@ -55,12 +55,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Files\ExtendedSource.cs" />
     <Compile Include="Library.cs" />
     <Compile Include="Storage\Database.cs" />
     <Compile Include="Files\GenericImage.cs" />
     <Compile Include="Files\GenericMedia.cs" />
-    <Compile Include="Files\IGenericMedia.cs" />
     <Compile Include="Servers\IServer.cs" />
+    <Compile Include="Storage\MediaData.cs" />
     <Compile Include="Storage\Thumbnailer.cs" />
     <Compile Include="Utils\FileValidator.cs" />
     <Compile Include="Utils\PictureRotator.cs" />

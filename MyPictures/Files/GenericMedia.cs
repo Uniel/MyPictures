@@ -7,50 +7,54 @@ using MyPictures.Storage;
 
 namespace MyPictures.Files
 {
-    abstract class GenericMedia : IGenericMedia
+    abstract class GenericMedia
     {
-        protected String path;
-        protected IServer server;
+        protected string path;
+        protected string type = "source";
 
-        protected Thumbnailer thumbnailer;
+        public IServer Server { get; }
 
-        public GenericMedia(String path, IServer server)
+        public MediaData Data { get; set; }
+
+        public GenericImage Thumbnail { get; set; }
+
+        public GenericMedia(string type, string path, IServer server)
         {
+            this.type = type;
+            this.Server = server;
             this.path = path.TrimEnd('\\');
-            this.server = server;
-
-            this.thumbnailer = new Thumbnailer();
         }
 
         public Stream Stream()
         {
-            return this.server.GetMediaStream(this.path);
+            return this.Server.GetMediaStream(this.path);
         }
 
-        public String GetPath()
+        public string GetPath()
         {
             return this.path;
         }
 
-        public String GetName()
+        public string GetName()
         {
-            // TODO: Replace with cross server implementation.
             return Path.GetFileName(this.path);
         }
 
-        protected BitmapFrame CorrectRotation()
+        protected BitmapFrame CorrectOrientation(BitmapFrame frame)
         {
             // Get the metadata from the first frame.
-            BitmapFrame frame = this.RetrieveFrame();
             BitmapMetadata data = this.RetrieveMetadata(frame);
 
             // Get the file orientation from metadata.
-            ushort orientation = (ushort) data.GetQuery("System.Photo.Orientation");
+            object query = data.GetQuery("System.Photo.Orientation");
 
             // Return original if has no metadata or orientation.
-            if (data == null || orientation == 1) {
+            if (data == null || query == null) {
                 return frame;
             }
+
+            // Cast query to readable ushort.
+            ushort orientation = (ushort) query;
 
             // Apply orientation change to parent based on metadata.
             switch (orientation) {
@@ -64,12 +68,12 @@ namespace MyPictures.Files
             // Return the frame if no change has been applied.
             return frame;
         }
+
+        public abstract BitmapFrame LoadSource();
+
+        public abstract BitmapFrame LoadThumbnail();
         
         public abstract BitmapDecoder Decode(Stream stream);
-
-        public abstract BitmapFrame RetrieveFrame(int frame = 0);
-
-        public abstract BitmapMetadata RetrieveMetadata(int frame = 0);
 
         public abstract BitmapMetadata RetrieveMetadata(BitmapFrame frame);
     }

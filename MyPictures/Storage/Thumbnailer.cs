@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using MyPictures.Servers;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -14,12 +15,41 @@ namespace MyPictures.Storage
 {
     class Thumbnailer
     {
-        public BitmapFrame Generate(BitmapFrame frame)
-        {
-            // Create frame from first image in object to ensure a picture
-            //BitmapFrame frame = ((GenericImage)media).RetrieveFrame(0);
+        protected LocalServer server;
 
-            // Scale values for width and height - ensures 1:1 ratio
+        public Thumbnailer(LocalServer server)
+        {
+            this.server = server;
+        }
+
+        public void Process(GenericMedia source)
+        {
+            // Check and load thumbnail if exists.
+            if (this.Exists(source))
+            {
+                this.Load(source);
+                return;
+            }
+
+            // Generate new thumbnail.
+            this.Generate(source);
+        }
+
+        public void Load(GenericMedia source)
+        {
+            // Find path for source thumbnail.
+            string path = this.MediaPath(source);
+
+            // Add new thumbnail media to source image.
+            source.Thumbnail = new GenericImage("thumbnail", path, this.server);
+        }
+
+        protected void Generate(GenericMedia source)
+        {
+            // Load first frame from source.
+            BitmapFrame frame = source.LoadSource();
+
+            // Find constants to scale image to 1:1 ratio.
             double scaleWidth = 300d / frame.PixelWidth;
             double scaleHeight = 300d / frame.PixelHeight;
             double scale = (scaleWidth > scaleHeight) ? scaleHeight : scaleWidth;
@@ -35,14 +65,29 @@ namespace MyPictures.Storage
             CroppedBitmap crop = new CroppedBitmap(frame, new Int32Rect(startX, startY, (int)size, (int)size));
             TransformedBitmap transformed = new TransformedBitmap(crop, transform);
 
-            // Return the transformation as a bitmapframe
-            return BitmapFrame.Create((BitmapSource)transformed);
+            // Convert transformed to bitmap frame.
+            BitmapFrame thumbnail = BitmapFrame.Create(transformed as BitmapSource);
+
+            // Save thumbnail in local storage.
+            string path = this.server.SaveMedia(source.GetName(), thumbnail);
+
+            // Add new thumbnail media to source image.
+            source.Thumbnail = new GenericImage("thumbnail", path, this.server);
         }
 
-        protected Boolean ThumbnailExists(String path)
+        protected string MediaPath(GenericMedia source)
         {
-            return false;
+            // Return thumbnail or null if not set.
+            return source.Data == null ? null : source.Data.Thumbnail;
         }
+ 
+        protected Boolean Exists(GenericMedia source)
+        {
+            // Get thumbnail path from source.
+            string path = this.MediaPath(source);
 
+            // Check that path is not null and file exists.
+            return path != null && this.server.FileExists(path);
+        }
     }
 }

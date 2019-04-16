@@ -7,6 +7,8 @@ namespace MyPictures.Servers
 {
     interface IServer
     {
+        string GetName();
+
         List<String> GetFilePaths();
 
         List<String> GetMediaPaths();

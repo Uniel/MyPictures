@@ -5,44 +5,87 @@ using System.Windows;
 using MyPictures.Files;
 using MyPictures.Utils;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
+using System.Drawing;
 
 namespace MyPictures.Servers
 {
     class LocalServer : IServer
     {
-        protected String directory;
-        protected String thumbnails = "\\.thumbnails";
+        protected string name;
+        protected string directory;
 
-        public LocalServer(String directory)
+        public LocalServer(string name, string directory)
         {
+            // Save passed server name on object.
+            this.name = name;
+
             // Trim ending backslash from directory and save.
             this.directory = directory.TrimEnd('\\');
         }
 
-        public List<String> GetFilePaths()
+        public string GetName()
         {
-            return Directory.EnumerateFiles(this.directory, "*.*", SearchOption.AllDirectories).ToList();
+            return this.name;
         }
 
-        public List<String> GetMediaPaths()
+        public Boolean FileExists(string path)
+        {
+            return File.Exists(path);
+        }
+
+        public List<string> GetFilePaths()
+        {
+            return Directory.EnumerateFiles(this.directory, "*.*", SearchOption.AllDirectories)
+                .Where(path => ! path.StartsWith(this.GetThumbnailDirectory())).ToList();
+        }
+
+        public List<string> GetMediaPaths()
         {
             return this.GetFilePaths().Where(FileValidator.IsMediaFile).ToList();
         }
 
         public List<GenericImage> GetMediaGenerics()
         {
-            return this.GetMediaPaths().Select(s => new GenericImage(s, this)).ToList();
+            return this.GetMediaPaths().Select(s => new GenericImage("source", s, this)).ToList();
         }
 
-        public Stream GetMediaStream(String path)
+        public Stream GetMediaStream(string path)
         {
             return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
- 
+
+        public string SaveMedia(string name, BitmapFrame frame)
+        {
+            // Generate path for new file.
+            string path = this.GetThumbnailDirectory() + "\\" + name;
+
+            // Create new file stream for found path.
+            FileStream stream = new FileStream(path, FileMode.Create);
+
+            // Create JPEG image encoder.
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+
+            // Add frame and save to stream.
+            encoder.Frames.Add(frame);
+            encoder.Save(stream);
+
+            // Close the file stream.
+            stream.Close();
+
+            // Return the final image path.
+            return path;
+        }
+
+        public string GetThumbnailDirectory()
+        {
+            return this.directory + "\\.thumbnails";
+        }
+
         public void CreateThumbnailsDirectory()
         {
             // Find thumbnails directory based on base.
-            string directory = this.directory + this.thumbnails;
+            string directory = this.GetThumbnailDirectory();
 
             // Check if thumbnail directory does not exist.
             if (! Directory.Exists(directory))

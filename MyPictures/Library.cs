@@ -10,6 +10,7 @@ namespace MyPictures
 {
     class Library
     {
+        protected LocalServer local;
         protected List<IServer> servers = new List<IServer>();
 
         protected List<string> paths = new List<string>();
@@ -23,11 +24,11 @@ namespace MyPictures
             // TODO: Load user server config.
 
             // Initialize local server.
-            LocalServer local = new LocalServer(@"C:\Users\Andreas\Pictures\dogs");
-            this.servers.Add(local);
+            this.local = new LocalServer("default", @"C:\Users\Andreas\Pictures\dogs");
+            this.servers.Add(this.local);
 
             // Create thumbnails directory on local server. 
-            local.CreateThumbnailsDirectory();
+            this.local.CreateThumbnailsDirectory();
 
             // TODO: Connect to external servers.
 
@@ -58,7 +59,7 @@ namespace MyPictures
                 // Add the image generics to library.
                 this.media.AddRange(server.GetMediaGenerics());
             });
-
+            
             // Load and clean the database.
             this.LoadDatabase();
         }
@@ -69,24 +70,35 @@ namespace MyPictures
             SQLiteDataReader reader = this.database.RetrieveMedia();
 
             // Keep reading while data is available.
-            while (reader.Read())
-            {
+            while (reader.Read()) {
+                // Create new media data instance.
+                MediaData data = new MediaData(reader);
+
+                // Find deleted paths still in database.
+                if (! this.paths.Contains(data.Path)) {
+                    // Remove path from database.
+                    this.database.DeleteID(data.ID);
+                    continue;
+                }
+
+                // Bind data instance to generic media objct.
+                this.media.Find(source => source.GetPath() == data.Path).Data = data;
+
                 // Add the id as key and path as value to list.
-                this.dbPaths.Add(int.Parse(reader["id"].ToString()), reader["path"].ToString());
+                this.dbPaths.Add(data.ID, data.Path);
             }
 
-            // Find paths not already in database.
+            // Create new thumbnail generator for local server.
+            Thumbnailer generator = new Thumbnailer(this.local);
+
+            // Generate thumbnail for all media items.
+            this.media.ForEach(media => generator.Process(media));
+
+            // Add missing paths to database.
             this.media.FindAll(media => ! this.dbPaths.ContainsValue(media.GetPath()))
                 .ForEach(media => {
-                    // Insert media in database.
+                    // Insert media into database.
                     this.database.InsertMedia(media);
-                });
-
-            // Find deleted paths still in database.
-            this.dbPaths.Where(item => ! this.paths.Contains(item.Value)).ToList()
-                .ForEach(pair => {
-                    // Remove path from database.
-                    this.database.DeleteID(pair.Key);
                 });
         }
     }
