@@ -24,7 +24,8 @@ namespace MyPictures
             // TODO: Load user server config.
 
             // Initialize local server.
-            this.local = new LocalServer("default", @"C:\Users\Andreas\Pictures\dogs");
+//            this.local = new LocalServer("default", @"C:\Users\Andreas\Pictures\dogs");
+            this.local = new LocalServer("default", @"C:\Users\John\Pictures\Billeder");
             this.servers.Add(this.local);
 
             // Create thumbnails directory on local server. 

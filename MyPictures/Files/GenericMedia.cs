@@ -45,6 +45,12 @@ namespace MyPictures.Files
             // Get the metadata from the first frame.
             BitmapMetadata data = this.RetrieveMetadata(frame);
 
+            // Return, if no orientation metadata - fix for PNG exceptions
+            if (!(data.ContainsQuery("System.Photo.Orientation")))
+            {
+                return frame;
+            }
+
             // Get the file orientation from metadata.
             object query = data.GetQuery("System.Photo.Orientation");
 

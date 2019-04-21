@@ -50,7 +50,7 @@ namespace MyPictures.Files
 
         public override BitmapMetadata RetrieveMetadata(BitmapFrame frame)
         {
-            return frame.Metadata as BitmapMetadata;
+            return (BitmapMetadata)frame.Metadata;
         }
     }
 }

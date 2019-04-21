@@ -12,7 +12,7 @@ namespace MyPictures.Utils
     {
         public static BitmapFrame Rotate(BitmapFrame picture, double angle)
         {
-            return BitmapFrame.Create(new TransformedBitmap(picture, new RotateTransform(angle)));
+            return BitmapFrame.Create(new TransformedBitmap(picture, new RotateTransform(angle)), null, picture.Metadata as BitmapMetadata, null);
         }
     }
 }

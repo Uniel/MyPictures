@@ -65,8 +65,11 @@ namespace MyPictures.Storage
             CroppedBitmap crop = new CroppedBitmap(frame, new Int32Rect(startX, startY, (int)size, (int)size));
             TransformedBitmap transformed = new TransformedBitmap(crop, transform);
 
+            BitmapMetadata ThumbnailMeta = ((BitmapMetadata)frame.Metadata).Clone();
+            ThumbnailMeta.SetQuery("System.Photo.Orientation", 1);
+
             // Convert transformed to bitmap frame.
-            BitmapFrame thumbnail = BitmapFrame.Create(transformed as BitmapSource);
+            BitmapFrame thumbnail = BitmapFrame.Create(transformed as BitmapSource, null, ThumbnailMeta, null);
 
             // Save thumbnail in local storage.
             string path = this.server.SaveMedia(source.GetName(), thumbnail);
