@@ -65,8 +65,12 @@ namespace MyPictures.Storage
             CroppedBitmap crop = new CroppedBitmap(frame, new Int32Rect(startX, startY, (int)size, (int)size));
             TransformedBitmap transformed = new TransformedBitmap(crop, transform);
 
+            // Check picture filetype support for rotation
             BitmapMetadata ThumbnailMeta = ((BitmapMetadata)frame.Metadata).Clone();
-            ThumbnailMeta.SetQuery("System.Photo.Orientation", 1);
+            if (FileValidator.SupportsOrientation(source.GetPath()))
+            {
+                ThumbnailMeta.SetQuery("System.Photo.Orientation", 1);
+            }
 
             // Convert transformed to bitmap frame.
             BitmapFrame thumbnail = BitmapFrame.Create(transformed as BitmapSource, null, ThumbnailMeta, null);

@@ -14,13 +14,18 @@ namespace MyPictures.Utils
         }
         public static Boolean IsImageFile(String path)
         {
-            return path.EndsWith(".png") || path.EndsWith(".jpg") || path.EndsWith(".jpeg");
+            return path.ToLower().EndsWith(".png") || path.ToLower().EndsWith(".jpg") || path.ToLower().EndsWith(".jpeg");
         }
 
         public static Boolean IsVideoFile(String path)
         {
             // TODO: Add suppported video files.
             return false;
+        }
+
+        public static Boolean SupportsOrientation(String path)
+        {
+            return path.ToLower().EndsWith(".tiff") || path.ToLower().EndsWith(".jpg") || path.ToLower().EndsWith(".jpeg");
         }
     }
 }
