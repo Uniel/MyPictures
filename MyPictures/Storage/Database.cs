@@ -32,7 +32,7 @@ namespace MyPictures.Storage
             string sql = "" +
             "CREATE TABLE IF NOT EXISTS media(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "name VARCHAR(255) NOT NULL UNIQUE," +
+                "name VARCHAR(255) NOT NULL," +
                 "path VARCHAR(255) NOT NULL," +
                 "server VARCHAR(255) NOT NULL," +
                 "thumbnail VARCHAR(255)," +

@@ -21,11 +21,12 @@ namespace MyPictures
 
         public void Initialize()
         {
-            // TODO: Load user server config.
+            // Load user server config.
+            string path = Properties.Settings.Default.Path;
+            path = Environment.ExpandEnvironmentVariables(path);
 
             // Initialize local server.
-//            this.local = new LocalServer("default", @"C:\Users\Andreas\Pictures\dogs");
-            this.local = new LocalServer("default", @"C:\Users\John\Pictures\Billeder");
+            this.local = new LocalServer("default", path);
             this.servers.Add(this.local);
 
             // Create thumbnails directory on local server. 

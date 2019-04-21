@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Files\ExtendedSource.cs" />
     <Compile Include="Library.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Storage\Database.cs" />
     <Compile Include="Files\GenericImage.cs" />
     <Compile Include="Files\GenericMedia.cs" />
