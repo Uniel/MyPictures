@@ -90,18 +90,28 @@ namespace MyPictures
                 this.dbPaths.Add(data.ID, data.Path);
             }
 
+            // Add missing paths to database.
+            this.media.FindAll(media => !this.dbPaths.ContainsValue(media.GetPath()))
+                .ForEach(media => {
+                    // Insert media into database.
+                    this.database.InsertMedia(media);
+                    Console.WriteLine(media.GetPath());
+                    media.Data = new MediaData(this.database.RetrieveMedia(media));
+                });
+
             // Create new thumbnail generator for local server.
             Thumbnailer generator = new Thumbnailer(this.local);
 
             // Generate thumbnail for all media items.
-            this.media.ForEach(media => generator.Process(media));
+            this.media.ForEach(media => {
+                Boolean created = generator.Process(media);
+                if (created)
+                {
+                    this.database.UpdateMedia(media.Data);
+                    media.Data = new MediaData(this.database.RetrieveMedia(media));
+                }
+            });
 
-            // Add missing paths to database.
-            this.media.FindAll(media => ! this.dbPaths.ContainsValue(media.GetPath()))
-                .ForEach(media => {
-                    // Insert media into database.
-                    this.database.InsertMedia(media);
-                });
         }
     }
 }

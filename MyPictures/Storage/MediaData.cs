@@ -13,7 +13,7 @@ namespace MyPictures.Storage
         public string Name { get; }
         public string Path { get; }
         public string Server { get; }
-        public string Thumbnail { get; }
+        public string Thumbnail { get; set; }
         public string CreatedAt { get; }
         public string UpdatedAt { get; }
 

@@ -22,17 +22,18 @@ namespace MyPictures.Storage
             this.server = server;
         }
 
-        public void Process(GenericMedia source)
+        public Boolean Process(GenericMedia source)
         {
             // Check and load thumbnail if exists.
             if (this.Exists(source))
             {
                 this.Load(source);
-                return;
+                return false;
             }
 
             // Generate new thumbnail.
             this.Generate(source);
+            return true;
         }
 
         public void Load(GenericMedia source)
@@ -75,11 +76,17 @@ namespace MyPictures.Storage
             // Convert transformed to bitmap frame.
             BitmapFrame thumbnail = BitmapFrame.Create(transformed as BitmapSource, null, ThumbnailMeta, null);
 
+            // Generate unique filename.
+            string name = source.Data.ID.ToString();
+            name += '.' + source.GetName().Split('.').Last();
+            
             // Save thumbnail in local storage.
-            string path = this.server.SaveMedia(source.GetName(), thumbnail);
+            string path = this.server.SaveMedia(name, thumbnail);
 
             // Add new thumbnail media to source image.
             source.Thumbnail = new GenericImage("thumbnail", path, this.server);
+
+            source.Data.Thumbnail = source.Thumbnail.GetPath();
         }
 
         protected string MediaPath(GenericMedia source)
@@ -92,7 +99,7 @@ namespace MyPictures.Storage
         {
             // Get thumbnail path from source.
             string path = this.MediaPath(source);
-
+            Console.WriteLine(path);
             // Check that path is not null and file exists.
             return path != null && this.server.FileExists(path);
         }

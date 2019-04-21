@@ -59,14 +59,16 @@ namespace MyPictures.Storage
         {
             // Prepare command object and query.
             SQLiteCommand command = new SQLiteCommand(null, this.connection);
-            command.CommandText = "SELECT * FROM media WHERE name = @name AND server = @server";
+            command.CommandText = "SELECT * FROM media WHERE name = @name AND path = @path AND server = @server";
             command.Parameters.Add(new SQLiteParameter("@name", DbType.String, 255));
+            command.Parameters.Add(new SQLiteParameter("@path", DbType.String, 255));
             command.Parameters.Add(new SQLiteParameter("@server", DbType.String, 255));
             command.Prepare();
 
             // Add data to prepared parameters.
             command.Parameters[0].Value = media.GetName();
-            command.Parameters[1].Value = media.Server.GetName();
+            command.Parameters[1].Value = media.GetPath();
+            command.Parameters[2].Value = media.Server.GetName();
 
             // Execute the query.
             return command.ExecuteReader();
@@ -76,12 +78,15 @@ namespace MyPictures.Storage
         {
             // Prepare command object and query.
             SQLiteCommand cmd = new SQLiteCommand(null, this.connection);
-            cmd.CommandText = "UPDATE media SET name = @name, path = @path, server = @server, thumbnail = @thumbnail, updated_at = @updated_at";
+            cmd.CommandText = "UPDATE media SET name = @name, path = @path, server = @server, thumbnail = @thumbnail, updated_at = @updated_at WHERE name = @Wname AND path = @Wpath AND server = @Wserver";
             cmd.Parameters.Add(new SQLiteParameter("@name", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@path", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@server", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@thumbnail", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@updated_at", DbType.String, 255));
+            cmd.Parameters.Add(new SQLiteParameter("@Wname", DbType.String, 255));
+            cmd.Parameters.Add(new SQLiteParameter("@Wpath", DbType.String, 255));
+            cmd.Parameters.Add(new SQLiteParameter("@Wserver", DbType.String, 255));
             cmd.Prepare();
 
             // Add data to prepared parameters.
@@ -90,6 +95,9 @@ namespace MyPictures.Storage
             cmd.Parameters[2].Value = data.Server;
             cmd.Parameters[3].Value = data.Thumbnail;
             cmd.Parameters[4].Value = DateTime.Now.ToString("u");
+            cmd.Parameters[5].Value = data.Name;
+            cmd.Parameters[6].Value = data.Path;
+            cmd.Parameters[7].Value = data.Server;
 
             // Execute the query.
             cmd.ExecuteNonQuery();
@@ -119,7 +127,7 @@ namespace MyPictures.Storage
             cmd.Parameters[0].Value = media.GetName();
             cmd.Parameters[1].Value = media.GetPath();
             cmd.Parameters[2].Value = media.Server.GetName();
-            cmd.Parameters[3].Value = media.Thumbnail.GetPath();
+            cmd.Parameters[3].Value = media.Thumbnail != null ? media.Thumbnail.GetPath() : null;
             cmd.Parameters[4].Value = date;
             cmd.Parameters[5].Value = now;
 
