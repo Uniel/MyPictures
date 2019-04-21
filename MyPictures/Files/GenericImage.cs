@@ -32,7 +32,7 @@ namespace MyPictures.Files
         
         public override BitmapDecoder Decode(Stream stream)
         {
-            return PngBitmapDecoder.Create(
+            return BitmapDecoder.Create(
                 stream,
                 BitmapCreateOptions.None,
                 BitmapCacheOption.Default
