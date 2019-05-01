@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using MyPictures.Files;
-using MyPictures.Servers;
-using MyPictures.Storage;
+using MyPicturesUWP.Files;
+using MyPicturesUWP.Servers;
+using MyPicturesUWP.Storage;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Threading;
 
-namespace MyPictures
+namespace MyPicturesUWP
 {
     class Library
     {
@@ -22,12 +21,10 @@ namespace MyPictures
 
         public void Initialize()
         {
-            // Load user server config.
-            string path = Properties.Settings.Default.Path;
-            path = Environment.ExpandEnvironmentVariables(path);
+            // TODO: Load user server config.
 
             // Initialize local server.
-            this.local = new LocalServer("default", path);
+            this.local = new LocalServer("default", @"C:\Users\Nicolai\Pictures\Screenshots");
             this.servers.Add(this.local);
 
             // Create thumbnails directory on local server. 
@@ -91,31 +88,18 @@ namespace MyPictures
                 this.dbPaths.Add(data.ID, data.Path);
             }
 
+            // Create new thumbnail generator for local server.
+            Thumbnailer generator = new Thumbnailer(this.local);
+
+            // Generate thumbnail for all media items.
+            this.media.ForEach(media => generator.Process(media));
+
             // Add missing paths to database.
-            this.media.FindAll(media => !this.dbPaths.ContainsValue(media.GetPath()))
+            this.media.FindAll(media => ! this.dbPaths.ContainsValue(media.GetPath()))
                 .ForEach(media => {
                     // Insert media into database.
                     this.database.InsertMedia(media);
-                    Console.WriteLine(media.GetPath());
-                    media.Data = new MediaData(this.database.RetrieveMedia(media));
                 });
-
-            // Create new thumbnail generator for local server.
-            Thumbnailer generator = new Thumbnailer(this.local);
-            Thumbnailer.AsyncMethodCaller caller = new Thumbnailer.AsyncMethodCaller(generator.Process);
-
-            // Generate thumbnail for all media items.
-            this.media.ForEach(media => {
-                IAsyncResult created = caller.BeginInvoke(media, out bool results, null, null);
-                created.AsyncWaitHandle.WaitOne();
-                Boolean returnValue = caller.EndInvoke(out results, created);
-                if (returnValue)
-                {
-                    this.database.UpdateMedia(media.Data);
-                    media.Data = new MediaData(this.database.RetrieveMedia(media));
-                }
-            });
-
         }
     }
 }
