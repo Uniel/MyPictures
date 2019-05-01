@@ -10,6 +10,7 @@ using System.Windows;
 using MyPictures.Servers;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Threading;
 
 namespace MyPictures.Storage
 {
@@ -22,19 +23,25 @@ namespace MyPictures.Storage
             this.server = server;
         }
 
-        public Boolean Process(GenericMedia source)
+        public Boolean Process(GenericMedia source, out bool results)
         {
+            Console.WriteLine("ThreadNumber: " + Thread.CurrentThread.ManagedThreadId);
             // Check and load thumbnail if exists.
             if (this.Exists(source))
             {
                 this.Load(source);
-                return false;
+                results = false;
+                return results;
+                //return String.Format("");
             }
 
             // Generate new thumbnail.
             this.Generate(source);
-            return true;
+            results = false;
+            return results;
+            //return String.Format("");
         }
+        public delegate Boolean AsyncMethodCaller(GenericMedia source, out bool results);
 
         public void Load(GenericMedia source)
         {
