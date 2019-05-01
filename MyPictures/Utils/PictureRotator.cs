@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace MyPictures.Utils
 {
-    class PictureRotator
+    static class PictureRotator
     {
         public static BitmapFrame Rotate(BitmapFrame picture, double angle)
         {

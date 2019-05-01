@@ -25,13 +25,25 @@ namespace MyPictures.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\%Username%\\Pictures")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%USERPROFILE%\\Pictures")]
         public string Path {
             get {
                 return ((string)(this["Path"]));
             }
             set {
                 this["Path"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GoogleProvider {
+            get {
+                return ((string)(this["GoogleProvider"]));
+            }
+            set {
+                this["GoogleProvider"] = value;
             }
         }
     }
