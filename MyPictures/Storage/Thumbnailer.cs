@@ -25,22 +25,20 @@ namespace MyPictures.Storage
 
         public Boolean Process(GenericMedia source, out bool results)
         {
-            Console.WriteLine("ThreadNumber: " + Thread.CurrentThread.ManagedThreadId);
             // Check and load thumbnail if exists.
             if (this.Exists(source))
             {
                 this.Load(source);
                 results = false;
                 return results;
-                //return String.Format("");
             }
 
             // Generate new thumbnail.
             this.Generate(source);
             results = false;
             return results;
-            //return String.Format("");
         }
+
         public delegate Boolean AsyncMethodCaller(GenericMedia source, out bool results);
 
         public void Load(GenericMedia source)
@@ -106,7 +104,7 @@ namespace MyPictures.Storage
         {
             // Get thumbnail path from source.
             string path = this.MediaPath(source);
-            Console.WriteLine(path);
+
             // Check that path is not null and file exists.
             return path != null && this.server.FileExists(path);
         }

@@ -84,15 +84,10 @@ namespace MyPictures
             // Check if Google Provider is connected.
             if (GoogleInstance.IsConnected())
             {
-                // Create new Google Drive server instance.
-                GoogleDriveServer drive = new GoogleDriveServer("google", "/", GoogleInstance);
-                this.servers.Add(drive);
-
-                Console.WriteLine("Printing Paths:");
-                drive.GetMediaPaths().ForEach(Console.WriteLine);
-            } else
-            {
-                // @wip - Redirect for now until UI feature..
+                // Create and add new Google Drive server instance to list.
+                this.servers.Add(new GoogleDriveServer("google", "/", GoogleInstance));
+            } else {
+                // TODO: Redirect for now until UI feature..
                 GoogleInstance.Redirect();
             }
         }
@@ -137,12 +132,13 @@ namespace MyPictures
             this.media.ForEach(media => {
                 IAsyncResult created = caller.BeginInvoke(media, out bool results, null, null);
                 created.AsyncWaitHandle.WaitOne();
-                /*Boolean returnValue =*/ caller.EndInvoke(out results, created);
-                /*if (returnValue)
+                Boolean returnValue = caller.EndInvoke(out results, created);
+                if (! returnValue)
                 {
+                    Console.WriteLine(media.Data.Thumbnail);
                     this.database.UpdateMedia(media.Data);
                     media.Data = new MediaData(this.database.RetrieveMedia(media));
-                }*/
+                }
             });
         }
     }
