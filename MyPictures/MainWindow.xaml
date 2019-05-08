@@ -5,34 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyPictures"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800">
     <Grid>
-        <!-- Side Panel -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Rectangle Fill="#34495e"/>
+        <!-- Photo grid area-->
+        <Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
+                <StackPanel>
+                    <Grid x:Name="ImageGrid" Grid.Column="1" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
         
-        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
-            <StackPanel>
-                <Grid x:Name="ImageGrid" Grid.Column="1" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+        <!-- Bottom Panel -->
+        <Grid Name="BottomBar" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Rectangle Fill="#34495e"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Name="PhotosGrid" Grid.Column="0" Margin="5">
+                    <Image Source="Assets/photo.png" />
                 </Grid>
-            </StackPanel>
-        </ScrollViewer>
+                <Grid Name="AlbumsGrid" Grid.Column="1" Margin="5">
+                    <Image Source="Assets/album.png" />
+                </Grid>
+                <Grid Name="SettingsGrid" Grid.Column="2"  Margin="5">
+                    <Image Source="Assets/gear.png" />
+                </Grid>
+            </Grid>
+
+        </Grid>
+
         <Grid x:Name="PreviewGrid"  Grid.ColumnSpan="2" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.7"/>
