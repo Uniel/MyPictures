@@ -12,7 +12,7 @@ namespace MyPictures
     class Library
     {
         protected LocalServer local;
-        protected List<IServer> servers = new List<IServer>();
+        protected List<Server> servers = new List<Server>();
         protected List<OAuthProvider> providers = new List<OAuthProvider>();
 
         protected List<string> paths = new List<string>();
@@ -57,14 +57,15 @@ namespace MyPictures
             this.media.Clear();
 
             // Loop though the server connections.
-            this.servers.ForEach(server => {
+            this.servers.ForEach(server =>
+            {
                 // Add the server media paths to library.
                 this.paths.AddRange(server.GetMediaPaths());
 
                 // Add the image generics to library.
                 this.media.AddRange(server.GetMediaGenerics());
             });
-            
+
             // Load and clean the database.
             this.LoadDatabase();
         }
@@ -79,7 +80,16 @@ namespace MyPictures
             // Check if Google Provider is connected.
             if (GoogleInstance.IsConnected())
             {
-                // @wip - Create Google Drive Server.
+                // Create new Google Drive server instance.
+                GoogleDriveServer drive = new GoogleDriveServer("google", "/", GoogleInstance);
+                this.servers.Add(drive);
+
+                Console.WriteLine("Printing Paths:");
+                drive.GetMediaPaths().ForEach(Console.WriteLine);
+            } else
+            {
+                // @wip - Redirect for now until UI feature..
+                GoogleInstance.Redirect();
             }
         }
 
@@ -112,7 +122,6 @@ namespace MyPictures
                 .ForEach(media => {
                     // Insert media into database.
                     this.database.InsertMedia(media);
-                    Console.WriteLine(media.GetPath());
                     media.Data = new MediaData(this.database.RetrieveMedia(media));
                 });
 
@@ -124,12 +133,12 @@ namespace MyPictures
             this.media.ForEach(media => {
                 IAsyncResult created = caller.BeginInvoke(media, out bool results, null, null);
                 created.AsyncWaitHandle.WaitOne();
-                Boolean returnValue = caller.EndInvoke(out results, created);
-                if (returnValue)
+                /*Boolean returnValue =*/ caller.EndInvoke(out results, created);
+                /*if (returnValue)
                 {
                     this.database.UpdateMedia(media.Data);
                     media.Data = new MediaData(this.database.RetrieveMedia(media));
-                }
+                }*/
             });
         }
     }

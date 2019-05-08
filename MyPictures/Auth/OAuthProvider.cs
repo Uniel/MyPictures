@@ -67,6 +67,11 @@ namespace MyPictures.Auth
             } catch (Exception) { /* Ignore Exception */ }
         }
 
+        public string GetToken()
+        {
+            return this.authorization.access_token;
+        }
+
         public bool IsConnected()
         {
             return this.authorization != null && this.authorization.access_token != null;

@@ -9,7 +9,7 @@ namespace MyPictures.Files
 {
     class GenericImage : GenericMedia
     {
-        public GenericImage(string type, string path, IServer server) : base(type, path, server)
+        public GenericImage(string type, string path, Server server) : base(type, path, server)
         {
             //
         }

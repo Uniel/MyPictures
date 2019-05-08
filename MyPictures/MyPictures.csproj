@@ -77,11 +77,12 @@
     <Compile Include="Auth\OAuthProvider.cs" />
     <Compile Include="Files\ExtendedSource.cs" />
     <Compile Include="Library.cs" />
+    <Compile Include="Servers\GoogleDriveServer.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Storage\Database.cs" />
     <Compile Include="Files\GenericImage.cs" />
     <Compile Include="Files\GenericMedia.cs" />
-    <Compile Include="Servers\IServer.cs" />
+    <Compile Include="Servers\Server.cs" />
     <Compile Include="Storage\MediaData.cs" />
     <Compile Include="Storage\Thumbnailer.cs" />
     <Compile Include="Utils\FileValidator.cs" />
