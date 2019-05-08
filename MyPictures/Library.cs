@@ -6,6 +6,7 @@ using MyPictures.Storage;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Threading;
+using MyPictures.Encryption;
 
 namespace MyPictures
 {
@@ -23,6 +24,9 @@ namespace MyPictures
 
         public void Initialize()
         {
+            // Create encryption module.
+            EncryptionModule encryptor = new EncryptionModule();
+
             // Load user server config.
             string path = Properties.Settings.Default.Path;
             path = Environment.ExpandEnvironmentVariables(path);

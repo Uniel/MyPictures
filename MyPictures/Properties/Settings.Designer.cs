@@ -46,5 +46,29 @@ namespace MyPictures.Properties {
                 this["GoogleProvider"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RijndaelKey {
+            get {
+                return ((string)(this["RijndaelKey"]));
+            }
+            set {
+                this["RijndaelKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RijndaelIV {
+            get {
+                return ((string)(this["RijndaelIV"]));
+            }
+            set {
+                this["RijndaelIV"] = value;
+            }
+        }
     }
 }
