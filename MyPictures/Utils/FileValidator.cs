@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyPictures.Utils
 {
-    class FileValidator
+    static class FileValidator
     {
         public static Boolean IsMediaFile(String path)
         {

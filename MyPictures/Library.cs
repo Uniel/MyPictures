@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
+using MyPictures.Auth;
 using MyPictures.Files;
 using MyPictures.Servers;
 using MyPictures.Storage;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Threading;
+using MyPictures.Encryption;
 
 namespace MyPictures
 {
@@ -13,6 +14,7 @@ namespace MyPictures
     {
         protected LocalServer local;
         protected List<IServer> servers = new List<IServer>();
+        protected List<OAuthProvider> providers = new List<OAuthProvider>();
 
         protected List<string> paths = new List<string>();
         protected List<GenericMedia> media = new List<GenericMedia>();
@@ -22,6 +24,9 @@ namespace MyPictures
 
         public void Initialize()
         {
+            // Create encryption module.
+            EncryptionModule encryptor = new EncryptionModule();
+
             // Load user server config.
             string path = Properties.Settings.Default.Path;
             path = Environment.ExpandEnvironmentVariables(path);
@@ -33,7 +38,8 @@ namespace MyPictures
             // Create thumbnails directory on local server. 
             this.local.CreateThumbnailsDirectory();
 
-            // TODO: Connect to external servers.
+            // Load external providers and servers.
+            this.LoadProviders();
 
             // Create database and connect.
             this.database = new Database();
@@ -65,6 +71,20 @@ namespace MyPictures
             
             // Load and clean the database.
             this.LoadDatabase();
+        }
+
+        protected void LoadProviders()
+        {
+            // Load Google Provider.
+            string GoogleSettings = Properties.Settings.Default.GoogleProvider;
+            GoogleProvider GoogleInstance = new GoogleProvider(GoogleSettings);
+            this.providers.Add(GoogleInstance);
+
+            // Check if Google Provider is connected.
+            if (GoogleInstance.IsConnected())
+            {
+                // @wip - Create Google Drive Server.
+            }
         }
 
         protected void LoadDatabase()

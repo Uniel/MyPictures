@@ -3,7 +3,16 @@
   <Profiles />
   <Settings>
     <Setting Name="Path" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\%Username%\Pictures</Value>
+      <Value Profile="(Default)">%USERPROFILE%\Pictures</Value>
+    </Setting>
+    <Setting Name="GoogleProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RijndaelKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RijndaelIV" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
