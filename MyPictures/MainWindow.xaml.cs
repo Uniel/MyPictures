@@ -15,6 +15,11 @@ namespace MyPictures
             Library library = new Library();
             library.Initialize();
 
+            // Build menu bar
+            ((Grid)this.FindName("PhotosGrid")).MouseDown += (s, e) => {
+                System.Environment.Exit(0);
+            };
+
             // Find picture grid element.
             int x = 0, y = 0;
             Grid grid = this.FindName("ImageGrid") as Grid;
@@ -48,7 +53,7 @@ namespace MyPictures
                 {
                     x = 0;
                     y++;
-                    if (y >= 3)
+                    if (y >= grid.RowDefinitions.Count)
                     {
                         // Sizing is off and images are automatically rotated?!?!
                         grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
