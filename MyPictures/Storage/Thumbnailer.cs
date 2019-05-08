@@ -23,25 +23,21 @@ namespace MyPictures.Storage
             this.server = server;
         }
 
-        public Boolean Process(GenericMedia source, out bool results)
+        public Boolean Process(GenericMedia source)
         {
             Console.WriteLine("ThreadNumber: " + Thread.CurrentThread.ManagedThreadId);
             // Check and load thumbnail if exists.
             if (this.Exists(source))
             {
                 this.Load(source);
-                results = false;
-                return results;
-                //return String.Format("");
+                return false;
             }
 
             // Generate new thumbnail.
             this.Generate(source);
-            results = false;
-            return results;
-            //return String.Format("");
+            return true;
         }
-        public delegate Boolean AsyncMethodCaller(GenericMedia source, out bool results);
+        public delegate Boolean AsyncMethodCaller(GenericMedia source);
 
         public void Load(GenericMedia source)
         {

@@ -103,19 +103,18 @@ namespace MyPictures
             // Create new thumbnail generator for local server.
             Thumbnailer generator = new Thumbnailer(this.local);
             Thumbnailer.AsyncMethodCaller caller = new Thumbnailer.AsyncMethodCaller(generator.Process);
-
             // Generate thumbnail for all media items.
             this.media.ForEach(media => {
-                IAsyncResult created = caller.BeginInvoke(media, out bool results, null, null);
-                created.AsyncWaitHandle.WaitOne();
-                Boolean returnValue = caller.EndInvoke(out results, created);
+                IAsyncResult created = caller.BeginInvoke(media, null, null);
+                //created.AsyncWaitHandle.WaitOne();
+                Boolean returnValue = caller.EndInvoke(created);
                 if (returnValue)
                 {
                     this.database.UpdateMedia(media.Data);
                     media.Data = new MediaData(this.database.RetrieveMedia(media));
                 }
+                created.AsyncWaitHandle.Close();
             });
-
         }
     }
 }
