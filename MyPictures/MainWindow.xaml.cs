@@ -24,10 +24,17 @@ namespace MyPictures
             ((Grid)this.FindName("PhotosButton")).MouseDown += (s, e) => {
                 this.ImagePane.Visibility = Visibility.Visible;
                 this.AlbumPane.Visibility = Visibility.Hidden;
+                this.SettingsPane.Visibility = Visibility.Hidden;
             };
             ((Grid)this.FindName("AlbumsButton")).MouseDown += (s, e) => {
                 this.ImagePane.Visibility = Visibility.Hidden;
                 this.AlbumPane.Visibility = Visibility.Visible;
+                this.SettingsPane.Visibility = Visibility.Hidden;
+            };
+            ((Grid)this.FindName("SettingsButton")).MouseDown += (s, e) => {
+                this.ImagePane.Visibility = Visibility.Hidden;
+                this.AlbumPane.Visibility = Visibility.Hidden;
+                this.SettingsPane.Visibility = Visibility.Visible;
             };
 
             // Find picture grid element.
@@ -96,6 +103,28 @@ namespace MyPictures
                     {
                         AlbumGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                     }
+                }
+            });
+
+            // List albums in the albums section
+            Grid SettingsGrid = this.FindName("SettingsGrid") as Grid;
+            x = 0; y = 0;
+
+            // Get the albums from the library
+            library.GetAlbums().ForEach(albumpath => {
+                // Generate a label for each found directory
+                Label txt = new Label();
+                txt.Content = albumpath;
+
+                // Insert label into album grid
+                Grid.SetColumn(txt, 0);
+                Grid.SetRow(txt, y++);
+                SettingsGrid.Children.Add(txt);
+
+                // Line break check
+                if (y >= SettingsGrid.RowDefinitions.Count)
+                {
+                    SettingsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 }
             });
         }

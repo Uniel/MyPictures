@@ -49,7 +49,26 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-
+        <!-- Settings -->
+        <Grid x:Name="SettingsPane" Grid.ColumnSpan="2" Visibility="Hidden">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
+                <StackPanel>
+                    <Grid x:Name="SettingsGrid" Grid.Column="1" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        
         <!-- Bottom Panel -->
         <Grid Name="BottomBar" VerticalAlignment="Bottom">
             <Grid.ColumnDefinitions>
