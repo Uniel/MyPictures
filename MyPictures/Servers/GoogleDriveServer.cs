@@ -75,5 +75,11 @@ namespace MyPictures.Servers
             // Read the response as a byte array and convert to stream.
             return new MemoryStream(response.Content.ReadAsByteArrayAsync().Result);
         }
+
+        public override List<string> GetAlbumPaths()
+        {
+            // TODO implement albums for Drive
+            return new List<string>();
+        }
     }
 }

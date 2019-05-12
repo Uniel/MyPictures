@@ -15,14 +15,24 @@ namespace MyPictures
             Library library = new Library();
             library.Initialize();
 
+            // Instansiate grids
+            Grid ImagePane = this.FindName("ImagePane") as Grid;
+            Grid AlbumPane = this.FindName("AlbumPane") as Grid;
+            Grid SettingsPane = this.FindName("SettingsPane") as Grid;
+
             // Build menu bar
-            ((Grid)this.FindName("PhotosGrid")).MouseDown += (s, e) => {
-                System.Environment.Exit(0);
+            ((Grid)this.FindName("PhotosButton")).MouseDown += (s, e) => {
+                this.ImagePane.Visibility = Visibility.Visible;
+                this.AlbumPane.Visibility = Visibility.Hidden;
+            };
+            ((Grid)this.FindName("AlbumsButton")).MouseDown += (s, e) => {
+                this.ImagePane.Visibility = Visibility.Hidden;
+                this.AlbumPane.Visibility = Visibility.Visible;
             };
 
             // Find picture grid element.
+            Grid ImagesGrid = this.FindName("ImageGrid") as Grid;
             int x = 0, y = 0;
-            Grid grid = this.FindName("ImageGrid") as Grid;
 
             // Loop through the whole library.
             library.GetLibrary().ForEach(generic => {
@@ -46,17 +56,45 @@ namespace MyPictures
                 };
 
                 // Add image to grid.
-                grid.Children.Add(image);
+                ImagesGrid.Children.Add(image);
 
                 // Go to next column at end of rows
-                if (x == grid.ColumnDefinitions.Count)
+                if (x == ImagesGrid.ColumnDefinitions.Count)
                 {
                     x = 0;
                     y++;
-                    if (y >= grid.RowDefinitions.Count)
+                    if (y >= ImagesGrid.RowDefinitions.Count)
                     {
-                        // Sizing is off and images are automatically rotated?!?!
-                        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                        ImagesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    }
+                }
+            });
+
+            // List albums in the albums section
+            Grid AlbumGrid = this.FindName("AlbumGrid") as Grid;
+
+            // Reset row/col variables
+            x = 0; y = 0;
+
+            // Get the albums from the library
+            library.GetAlbums().ForEach(albumpath => {
+                // Generate a label for each found directory
+                Label txt = new Label();
+                txt.Content = albumpath;
+
+                // Insert label into album grid
+                Grid.SetColumn(txt, x++);
+                Grid.SetRow(txt, y);
+                AlbumGrid.Children.Add(txt);
+
+                // Line break check
+                if (x == AlbumGrid.ColumnDefinitions.Count)
+                {
+                    x = 0;
+                    y++;
+                    if (y >= AlbumGrid.RowDefinitions.Count)
+                    {
+                        AlbumGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                     }
                 }
             });

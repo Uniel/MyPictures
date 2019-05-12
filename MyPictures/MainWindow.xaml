@@ -8,7 +8,7 @@
         Title="MainWindow" Height="600" Width="800">
     <Grid>
         <!-- Photo grid area-->
-        <Grid>
+        <Grid x:Name="ImagePane" Visibility="Visible">
             <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
                 <StackPanel>
                     <Grid x:Name="ImageGrid" Grid.Column="1" >
@@ -28,7 +28,28 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        
+        <!-- Album grid area-->
+        <Grid x:Name="AlbumPane" Grid.ColumnSpan="2" Visibility="Hidden">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
+                <StackPanel>
+                    <Grid x:Name="AlbumGrid" Grid.Column="1" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
         <!-- Bottom Panel -->
         <Grid Name="BottomBar" VerticalAlignment="Bottom">
             <Grid.ColumnDefinitions>
@@ -44,13 +65,13 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Grid Name="PhotosGrid" Grid.Column="0" Margin="5">
+                <Grid Name="PhotosButton" Grid.Column="0" Margin="5">
                     <Image Source="Assets/photo.png" />
                 </Grid>
-                <Grid Name="AlbumsGrid" Grid.Column="1" Margin="5">
+                <Grid Name="AlbumsButton" Grid.Column="1" Margin="5">
                     <Image Source="Assets/album.png" />
                 </Grid>
-                <Grid Name="SettingsGrid" Grid.Column="2"  Margin="5">
+                <Grid Name="SettingsButton" Grid.Column="2"  Margin="5">
                     <Image Source="Assets/gear.png" />
                 </Grid>
             </Grid>

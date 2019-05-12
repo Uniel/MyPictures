@@ -85,5 +85,25 @@ namespace MyPictures.Servers
                 }
             }
         }
+
+        public override List<string> GetAlbumPaths()
+        {
+            // Get the directories in working directory - which are not thumbnail dir
+            List<string> dirs = new List<string>(Directory.EnumerateDirectories(this.directory))
+                .Where(path => !path.StartsWith(this.GetThumbnailDirectory())).ToList();
+
+            List<string> albums = new List<string>();
+            // Evaluate contents of each directory
+            foreach(string dir in dirs)
+            {
+                // Check for any media files
+                if(Directory.GetFiles(dir)
+                    .Where(path => FileValidator.IsMediaFile(path)) != null)
+                {
+                    albums.Add(dir);
+                }
+            }
+            return albums;
+        }
     }
 }

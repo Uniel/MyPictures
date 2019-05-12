@@ -18,6 +18,7 @@ namespace MyPictures
 
         protected List<string> paths = new List<string>();
         protected List<GenericMedia> media = new List<GenericMedia>();
+        protected List<string> albums = new List<string>();
 
         protected Database database;
         protected Dictionary<int, string> dbPaths = new Dictionary<int, string>();
@@ -72,6 +73,12 @@ namespace MyPictures
 
             // Load and clean the database.
             this.LoadDatabase();
+        }
+
+        public List<string> GetAlbums()
+        {
+            this.albums = this.local.GetAlbumPaths();
+            return this.albums;
         }
 
         protected void LoadProviders()
@@ -141,5 +148,6 @@ namespace MyPictures
                 }
             });
         }
+
     }
 }

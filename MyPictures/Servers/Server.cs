@@ -48,5 +48,7 @@ namespace MyPictures.Servers
         public abstract List<string> GetFilePaths();
 
         public abstract Stream GetMediaStream(string path);
+
+        public abstract List<string> GetAlbumPaths();
     }
 }
