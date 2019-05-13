@@ -70,6 +70,12 @@ namespace MyPictures.Servers
             return new MemoryStream(response.Content.ReadAsByteArrayAsync().Result);
         }
 
+        public override string UploadMediaStream(string path, Stream stream)
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
+        }
+
         public override List<string> GetAlbumPaths()
         {
             // TODO implement albums for Drive
