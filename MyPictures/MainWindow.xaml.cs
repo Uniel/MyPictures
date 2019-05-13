@@ -3,19 +3,23 @@ using MyPictures.Files;
 using System.Windows.Controls;
 using System;
 using System.IO;
+using System.Collections.Generic;
+using MyPictures.Servers;
 
 namespace MyPictures
 {
     public partial class MainWindow : Window
     {
+        Library library;
+
         public MainWindow()
         {
             // Initialize UI.
             InitializeComponent();
 
-            // Create library and Initialize.
-            Library library = new Library();
-            library.Initialize();
+            // Create and initialize library.
+            this.library = new Library();
+            this.library.Initialize();
 
             // Instansiate grids
             Grid ImagePane = this.FindName("ImagePane") as Grid;
@@ -44,7 +48,7 @@ namespace MyPictures
             int x = 0, y = 0;
 
             // Loop through the whole library.
-            library.GetLibrary().ForEach(generic => {
+            this.library.GetLibrary().ForEach(generic => {
                 // Create new extended image source.
                 ExtendedSource image = new ExtendedSource(generic);
 
@@ -86,7 +90,7 @@ namespace MyPictures
             x = 0; y = 0;
 
             // Get the albums from the library
-            library.GetAlbums().ForEach(albumpath => {
+            this.library.GetAlbums().ForEach(albumpath => {
                 // Generate a label for each found directory
                 Label txt = new Label();
                 txt.Content = albumpath;
@@ -113,7 +117,7 @@ namespace MyPictures
             x = 0; y = 0;
 
             // Get the albums from the library
-            library.GetAlbums().ForEach(albumpath => {
+            this.library.GetAlbums().ForEach(albumpath => {
                 // Generate a label for each found directory
                 Label txt = new Label();
                 txt.Content = albumpath;
@@ -131,21 +135,32 @@ namespace MyPictures
             });
         }
 
-
         private void DropPanel_Drop(object sender, DragEventArgs e)
         {
-            // If file(s) present retreve path
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                // move each file(s) to root path
-                foreach (string fileName in files)
-                {
-                    //string destFile = Path.Combine(, fileName);
+            // Skip if no file data is present.
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-                    //File.Move(fileName, destFile);
-                }
-            }
+            // Get array of file paths and convert to list.
+            string[] paths = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            List<string> files = new List<string>(paths);
+
+            // Loop through the dropped files.
+            files.ForEach(file => {
+                // Get current local server for library.
+                LocalServer server = this.library.local;
+
+                // Generate name for dropped file.
+                int index = file.LastIndexOf('\\');
+                string name = file.Substring(index + 1, file.Length - index - 1);
+                Console.WriteLine(server.GetDirectory() + "\\" + name);
+
+                // Get media stream and upload to local server.
+                Stream stream = server.GetMediaStream(file);
+                server.UploadMediaStream(server.GetDirectory() + "\\" + name, stream);
+
+                // TODO: Refresh view.
+                // TODO: Fix only possible to drop files on grid.
+            });
         }
     }
 }

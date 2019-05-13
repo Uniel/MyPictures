@@ -27,6 +27,11 @@ namespace MyPictures.Servers
             this.directory = directory.TrimEnd('\\');
         }
 
+        public string GetDirectory()
+        {
+            return this.directory;
+        }
+
         public string GetName()
         {
             return this.name;

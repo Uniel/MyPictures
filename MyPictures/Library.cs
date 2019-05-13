@@ -12,7 +12,7 @@ namespace MyPictures
 {
     class Library
     {
-        protected LocalServer local;
+        public LocalServer local;
         protected List<Server> servers = new List<Server>();
         protected List<OAuthProvider> providers = new List<OAuthProvider>();
 
