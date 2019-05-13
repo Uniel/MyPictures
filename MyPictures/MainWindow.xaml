@@ -18,7 +18,7 @@
         <Rectangle Fill="#34495e"/>
         
         <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
-            <StackPanel>
+            <StackPanel Name="DropPanel" Drop="DropPanel_Drop" AllowDrop="true">
                 <Grid x:Name="ImageGrid" Grid.Column="1" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
