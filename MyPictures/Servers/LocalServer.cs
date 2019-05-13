@@ -19,7 +19,7 @@ namespace MyPictures.Servers
             //
         }
 
-        public override bool FileExists(string path)
+        public bool FileExists(string path)
         {
             return File.Exists(path);
         }

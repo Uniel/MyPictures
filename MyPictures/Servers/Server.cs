@@ -43,8 +43,6 @@ namespace MyPictures.Servers
             return this.GetMediaPaths().Select(s => new GenericImage("source", s, this)).ToList();
         }
 
-        public abstract bool FileExists(string path);
-
         public abstract List<string> GetFilePaths();
 
         public abstract Stream GetMediaStream(string path);

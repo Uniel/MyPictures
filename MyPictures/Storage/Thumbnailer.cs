@@ -97,10 +97,10 @@ namespace MyPictures.Storage
         protected string MediaPath(GenericMedia source)
         {
             // Return thumbnail or null if not set.
-            return source.Data == null ? null : source.Data.Thumbnail;
+            return source.Data?.Thumbnail;
         }
  
-        protected Boolean Exists(GenericMedia source)
+        protected bool Exists(GenericMedia source)
         {
             // Get thumbnail path from source.
             string path = this.MediaPath(source);

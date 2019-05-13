@@ -23,12 +23,6 @@ namespace MyPictures.Servers
             //
         }
 
-        public override bool FileExists(string path)
-        {
-            // TODO: Currently only used by thumbnailer.
-            return false;
-        }
-
         public override List<string> GetFilePaths()
         {
             // Add Google Drive OAuth authorization bearer token.
