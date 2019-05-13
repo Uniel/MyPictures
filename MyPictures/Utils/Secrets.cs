@@ -19,6 +19,7 @@ namespace MyPictures.Utils
             if (! File.Exists("secrets.json"))
             {
                 MessageBox.Show("Secrets file missing! OAuth will be unavailable.", "Loading Failed");
+                return;
             }
 
             // Read all text from secrets file.

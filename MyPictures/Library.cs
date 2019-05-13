@@ -26,7 +26,7 @@ namespace MyPictures
         public void Initialize()
         {
             // Create encryption module.
-            EncryptionModule encryptor = new EncryptionModule();
+            EncryptionManager encryptor = new EncryptionManager();
 
             // Load user server config.
             string path = Properties.Settings.Default.Path;
