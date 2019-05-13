@@ -147,11 +147,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\album.png" />
-    <Resource Include="Assets\albumB.png" />
     <Resource Include="Assets\gear.png" />
-    <Resource Include="Assets\gearB.png" />
     <Resource Include="Assets\photo.png" />
-    <Resource Include="Assets\photoB.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
