@@ -13,11 +13,12 @@ namespace MyPictures
     class Library
     {
         protected LocalServer local;
-        protected List<IServer> servers = new List<IServer>();
+        protected List<Server> servers = new List<Server>();
         protected List<OAuthProvider> providers = new List<OAuthProvider>();
 
         protected List<string> paths = new List<string>();
         protected List<GenericMedia> media = new List<GenericMedia>();
+        protected List<string> albums = new List<string>();
 
         protected Database database;
         protected Dictionary<int, string> dbPaths = new Dictionary<int, string>();
@@ -61,16 +62,23 @@ namespace MyPictures
             this.media.Clear();
 
             // Loop though the server connections.
-            this.servers.ForEach(server => {
+            this.servers.ForEach(server =>
+            {
                 // Add the server media paths to library.
                 this.paths.AddRange(server.GetMediaPaths());
 
                 // Add the image generics to library.
                 this.media.AddRange(server.GetMediaGenerics());
             });
-            
+
             // Load and clean the database.
             this.LoadDatabase();
+        }
+
+        public List<string> GetAlbums()
+        {
+            this.albums = this.local.GetAlbumPaths();
+            return this.albums;
         }
 
         protected void LoadProviders()
@@ -83,7 +91,11 @@ namespace MyPictures
             // Check if Google Provider is connected.
             if (GoogleInstance.IsConnected())
             {
-                // @wip - Create Google Drive Server.
+                // Create and add new Google Drive server instance to list.
+                this.servers.Add(new GoogleDriveServer("google", "/", GoogleInstance));
+            } else {
+                // TODO: Redirect for now until UI feature..
+                GoogleInstance.Redirect();
             }
         }
 
@@ -116,25 +128,26 @@ namespace MyPictures
                 .ForEach(media => {
                     // Insert media into database.
                     this.database.InsertMedia(media);
-                    Console.WriteLine(media.GetPath());
                     media.Data = new MediaData(this.database.RetrieveMedia(media));
                 });
 
             // Create new thumbnail generator for local server.
             Thumbnailer generator = new Thumbnailer(this.local);
             Thumbnailer.AsyncMethodCaller caller = new Thumbnailer.AsyncMethodCaller(generator.Process);
+
             // Generate thumbnail for all media items.
             this.media.ForEach(media => {
-                IAsyncResult created = caller.BeginInvoke(media, null, null);
-                //created.AsyncWaitHandle.WaitOne();
-                Boolean returnValue = caller.EndInvoke(created);
-                if (returnValue)
+                IAsyncResult created = caller.BeginInvoke(media, out bool results, null, null);
+                created.AsyncWaitHandle.WaitOne();
+                Boolean returnValue = caller.EndInvoke(out results, created);
+                if (! returnValue)
                 {
+                    Console.WriteLine(media.Data.Thumbnail);
                     this.database.UpdateMedia(media.Data);
                     media.Data = new MediaData(this.database.RetrieveMedia(media));
                 }
-                created.AsyncWaitHandle.Close();
             });
         }
+
     }
 }

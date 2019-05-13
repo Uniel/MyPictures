@@ -12,13 +12,13 @@ namespace MyPictures.Files
         protected string path;
         protected string type = "source";
 
-        public IServer Server { get; }
+        public Server Server { get; }
 
         public MediaData Data { get; set; }
 
         public GenericImage Thumbnail { get; set; }
 
-        public GenericMedia(string type, string path, IServer server)
+        public GenericMedia(string type, string path, Server server)
         {
             this.type = type;
             this.Server = server;

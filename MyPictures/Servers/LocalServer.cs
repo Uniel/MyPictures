@@ -7,50 +7,30 @@ using MyPictures.Utils;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Drawing;
+using System.Threading.Tasks;
+using MyPictures.Auth;
 
 namespace MyPictures.Servers
 {
-    class LocalServer : IServer
+    class LocalServer : Server
     {
-        protected string name;
-        protected string directory;
-
-        public LocalServer(string name, string directory)
+        public LocalServer(string name, string directory, OAuthProvider provider = null) : base(name, directory, provider)
         {
-            // Save passed server name on object.
-            this.name = name;
-
-            // Trim ending backslash from directory and save.
-            this.directory = directory.TrimEnd('\\');
+            //
         }
 
-        public string GetName()
-        {
-            return this.name;
-        }
-
-        public Boolean FileExists(string path)
+        public override bool FileExists(string path)
         {
             return File.Exists(path);
         }
 
-        public List<string> GetFilePaths()
+        public override List<string> GetFilePaths()
         {
             return Directory.EnumerateFiles(this.directory, "*.*", SearchOption.AllDirectories)
                 .Where(path => ! path.StartsWith(this.GetThumbnailDirectory())).ToList();
         }
 
-        public List<string> GetMediaPaths()
-        {
-            return this.GetFilePaths().Where(FileValidator.IsMediaFile).ToList();
-        }
-
-        public List<GenericImage> GetMediaGenerics()
-        {
-            return this.GetMediaPaths().Select(s => new GenericImage("source", s, this)).ToList();
-        }
-
-        public Stream GetMediaStream(string path)
+        public override Stream GetMediaStream(string path)
         {
             return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
@@ -104,6 +84,26 @@ namespace MyPictures.Servers
                     throw;
                 }
             }
+        }
+
+        public override List<string> GetAlbumPaths()
+        {
+            // Get the directories in working directory - which are not thumbnail dir
+            List<string> dirs = new List<string>(Directory.EnumerateDirectories(this.directory))
+                .Where(path => !path.StartsWith(this.GetThumbnailDirectory())).ToList();
+
+            List<string> albums = new List<string>();
+            // Evaluate contents of each directory
+            foreach(string dir in dirs)
+            {
+                // Check for any media files
+                if(Directory.GetFiles(dir)
+                    .Where(path => FileValidator.IsMediaFile(path)) != null)
+                {
+                    albums.Add(dir);
+                }
+            }
+            return albums;
         }
     }
 }
