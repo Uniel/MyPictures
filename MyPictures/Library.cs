@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Threading;
 using MyPictures.Encryption;
+using System.Linq;
 
 namespace MyPictures
 {
@@ -52,7 +53,18 @@ namespace MyPictures
 
         public List<GenericMedia> GetLibrary()
         {
+            this.media.ForEach(m => Console.WriteLine(m.GetPath()));
             return this.media;
+        }
+
+        public List<GenericMedia> GetLibraryAlbums(string AlbumPath)
+        {
+            // Go through the media list and return pictures in the album path provided
+            return this.media.Where(media =>
+            {
+                //Console.WriteLine(System.IO.Path.GetDirectoryName(media.GetPath()));
+                return System.IO.Path.GetDirectoryName(media.GetPath()) == AlbumPath;
+            }).ToList();
         }
 
         public void LoadLibrary()
