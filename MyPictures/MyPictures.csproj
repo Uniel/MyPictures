@@ -75,7 +75,7 @@
   <ItemGroup>
     <Compile Include="Auth\GoogleProvider.cs" />
     <Compile Include="Auth\OAuthProvider.cs" />
-    <Compile Include="Encryption\EncryptionModule.cs" />
+    <Compile Include="Storage\EncryptionManager.cs" />
     <Compile Include="Files\ExtendedSource.cs" />
     <Compile Include="Library.cs" />
     <Compile Include="Servers\GoogleDriveServer.cs" />

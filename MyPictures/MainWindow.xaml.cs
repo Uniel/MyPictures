@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using MyPictures.Files;
 using System.Windows.Controls;
+using System;
+using System.IO;
 
 namespace MyPictures
 {
@@ -186,6 +188,23 @@ namespace MyPictures
                     SettingsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 }
             });
+        }
+
+
+        private void DropPanel_Drop(object sender, DragEventArgs e)
+        {
+            // If file(s) present retreve path
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                // move each file(s) to root path
+                foreach (string fileName in files)
+                {
+                    //string destFile = Path.Combine(, fileName);
+
+                    //File.Move(fileName, destFile);
+                }
+            }
         }
     }
 }

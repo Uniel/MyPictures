@@ -19,7 +19,7 @@ namespace MyPictures.Servers
             //
         }
 
-        public override bool FileExists(string path)
+        public bool FileExists(string path)
         {
             return File.Exists(path);
         }
@@ -35,25 +35,21 @@ namespace MyPictures.Servers
             return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
-        public string SaveMedia(string name, BitmapFrame frame)
+        public override string UploadMediaStream(string path, Stream stream)
         {
-            // Generate path for new file.
-            string path = this.GetThumbnailDirectory() + "\\" + name;
-
             // Create new file stream for found path.
-            FileStream stream = new FileStream(path, FileMode.Create);
+            FileStream location = new FileStream(path, FileMode.OpenOrCreate);
 
-            // Create JPEG image encoder.
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            // Reset to stream to start of contents.
+            stream.Seek(0, SeekOrigin.Begin);
 
-            // Add frame and save to stream.
-            encoder.Frames.Add(frame);
-            encoder.Save(stream);
+            // Copy contents to file stream.
+            stream.CopyTo(location);
 
-            // Close the file stream.
-            stream.Close();
+            // Close the file stream. 
+            location.Close();
 
-            // Return the final image path.
+            // Return the final path.
             return path;
         }
 

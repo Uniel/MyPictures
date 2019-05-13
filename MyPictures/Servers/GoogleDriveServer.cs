@@ -23,12 +23,6 @@ namespace MyPictures.Servers
             //
         }
 
-        public override bool FileExists(string path)
-        {
-            // TODO: Currently only used by thumbnailer.
-            return false;
-        }
-
         public override List<string> GetFilePaths()
         {
             // Add Google Drive OAuth authorization bearer token.
@@ -74,6 +68,12 @@ namespace MyPictures.Servers
             
             // Read the response as a byte array and convert to stream.
             return new MemoryStream(response.Content.ReadAsByteArrayAsync().Result);
+        }
+
+        public override string UploadMediaStream(string path, Stream stream)
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
 
         public override List<string> GetAlbumPaths()

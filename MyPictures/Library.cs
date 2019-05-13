@@ -27,7 +27,7 @@ namespace MyPictures
         public void Initialize()
         {
             // Create encryption module.
-            EncryptionModule encryptor = new EncryptionModule();
+            EncryptionManager encryptor = new EncryptionManager();
 
             // Load user server config.
             string path = Properties.Settings.Default.Path;
@@ -149,9 +149,9 @@ namespace MyPictures
 
             // Generate thumbnail for all media items.
             this.media.ForEach(media => {
-                IAsyncResult created = caller.BeginInvoke(media, out bool results, null, null);
+                IAsyncResult created = caller.BeginInvoke(media, null, null);
                 created.AsyncWaitHandle.WaitOne();
-                Boolean returnValue = caller.EndInvoke(out results, created);
+                Boolean returnValue = caller.EndInvoke(created);
                 if (! returnValue)
                 {
                     Console.WriteLine(media.Data.Thumbnail);
