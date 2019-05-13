@@ -49,6 +49,27 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
+        <!-- Photos of selected album grid area-->
+        <Grid x:Name="SelectedAlbumPane" Visibility="Hidden">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
+                <StackPanel>
+                    <Grid x:Name="AlbumImageGrid" Grid.Column="1" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
         <!-- Settings -->
         <Grid x:Name="SettingsPane" Grid.ColumnSpan="2" Visibility="Hidden">
             <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="1">
