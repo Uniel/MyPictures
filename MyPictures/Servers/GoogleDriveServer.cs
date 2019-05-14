@@ -1,18 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using MyPictures.Files;
-using MyPictures.Utils;
-using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using System.Drawing;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using MyPictures.Auth;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using System.Text;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
 
 namespace MyPictures.Servers
 {

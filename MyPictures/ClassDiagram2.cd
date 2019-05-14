@@ -11,7 +11,7 @@
   <Class Name="MyPictures.Library" Collapsed="true">
     <Position X="7.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQABQAAAQBAAAAAQAAAAAAxEAAIQAAARAAgAAA=</HashCode>
+      <HashCode>AAAAAAQABQAAAQBAAAAAQAAEAAAxEAAIQAAARAAgAAA=</HashCode>
       <FileName>Library.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -74,7 +74,7 @@
   <Class Name="MyPictures.Properties.Settings" Collapsed="true">
     <Position X="6" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAEAAAAIEAAAAIACAAAABAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAAAAAAAAIAAAEIEAAAAIACAAAABAAAAAAAAAAAACAA=</HashCode>
       <FileName>Settings.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -109,7 +109,7 @@
   <Class Name="MyPictures.Storage.MediaData" Collapsed="true">
     <Position X="11.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAiAIAACAACAQAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAiAIAACAACAQAAAAAAAAAAAAAAoAAAAA=</HashCode>
       <FileName>Storage\MediaData.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -118,13 +118,6 @@
     <TypeIdentifier>
       <HashCode>AAAAgAACAAAAAAAAAgAAAAAAAAAAAAAAAAAAAEEAAAI=</HashCode>
       <FileName>Storage\Thumbnailer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MyPictures.Encryption.EncryptionManager" Collapsed="true">
-    <Position X="9.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAACAAAAEAAAAAAAAECAAAAAAAAIAAAAAAAAEAIAA=</HashCode>
-      <FileName>Storage\EncryptionManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MyPictures.Utils.FileValidator" Collapsed="true">

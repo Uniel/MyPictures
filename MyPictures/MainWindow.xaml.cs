@@ -1,10 +1,10 @@
-﻿using System.Windows;
-using MyPictures.Files;
-using System.Windows.Controls;
-using System;
+﻿using System;
 using System.IO;
-using System.Collections.Generic;
+using System.Windows;
+using MyPictures.Files;
 using MyPictures.Servers;
+using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace MyPictures
 {

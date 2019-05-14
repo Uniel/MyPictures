@@ -1,6 +1,6 @@
-﻿using MyPictures.Utils;
+﻿using System;
+using MyPictures.Utils;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 
 namespace MyPictures.Auth

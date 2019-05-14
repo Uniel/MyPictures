@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-using MyPictures.Files;
-using MyPictures.Utils;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Linq;
 using System.Net.Http;
 using MyPictures.Auth;
+using MyPictures.Files;
+using MyPictures.Utils;
+using System.Collections.Generic;
 
 namespace MyPictures.Servers
 {

@@ -1,13 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using MyPictures.Auth;
 using MyPictures.Files;
 using MyPictures.Servers;
 using MyPictures.Storage;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Threading;
-using System.Linq;
-using System.IO;
 
 namespace MyPictures
 {

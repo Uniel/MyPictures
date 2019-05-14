@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using MyPictures.Servers;
 using System.Windows.Media.Imaging;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace MyPictures.Files
 {

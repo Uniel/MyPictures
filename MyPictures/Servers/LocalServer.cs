@@ -2,13 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
-using MyPictures.Files;
+using MyPictures.Auth;
 using MyPictures.Utils;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using System.Drawing;
-using System.Threading.Tasks;
-using MyPictures.Auth;
 
 namespace MyPictures.Servers
 {
