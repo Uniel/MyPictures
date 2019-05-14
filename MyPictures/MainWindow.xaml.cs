@@ -5,6 +5,7 @@ using MyPictures.Files;
 using MyPictures.Servers;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MyPictures
 {
@@ -98,7 +99,6 @@ namespace MyPictures
                 // Generate a label for each found directory
                 Button txt = new Button();
                 txt.Content = albumpath.ToString();
-                System.Console.WriteLine(txt.Content);
 
                 // Insert label into album grid
                 Grid.SetColumn(txt, x++);
@@ -144,17 +144,12 @@ namespace MyPictures
                             }
                         }
                     });
-                    // AlbumImageGrid
 
                     // Hide other panes
                     this.ImagePane.Visibility = Visibility.Hidden;
                     this.AlbumPane.Visibility = Visibility.Hidden;
                     this.SettingsPane.Visibility = Visibility.Hidden;
                     this.SelectedAlbumPane.Visibility = Visibility.Visible;
-
-
-                    System.Console.WriteLine(((Button)s).Content.ToString());
-                    
                 };
 
                 AlbumGrid.Children.Add(txt);
@@ -175,16 +170,43 @@ namespace MyPictures
             Grid SettingsGrid = this.FindName("SettingsGrid") as Grid;
             x = 0; y = 0;
 
-            // Get the albums from the library
-            this.library.GetAlbums().ForEach(albumpath => {
-                // Generate a label for each found directory
-                Label txt = new Label();
-                txt.Content = albumpath;
+            // Set the settings
+            this.library.GetSettings().ForEach(Setting => {
+                // Generate a label for setting name and description
+                Label name = new Label();
+                Label description = new Label();
+                name.Content = Setting.Item1;
+                description.Content = Setting.Item2;
+
+                // Insert Name
+                Grid.SetColumn(name, 0);
+                Grid.SetRow(name, y);
+                SettingsGrid.Children.Add(name);
+                // Insert Description
+                Grid.SetColumn(description, 1);
+                Grid.SetRow(description, y);
+                SettingsGrid.Children.Add(description);
+
+                // Generate and insert action button
+                Button action = new Button();
+                action.Content = Setting.Item3.ToString();
 
                 // Insert label into album grid
-                Grid.SetColumn(txt, 0);
-                Grid.SetRow(txt, y++);
-                SettingsGrid.Children.Add(txt);
+                Grid.SetColumn(action, 2);
+                Grid.SetRow(action, y++);
+
+                // Add album selection event handler.
+                action.PreviewMouseDown += (s, e) =>
+                {
+                    // Get the setting of the first column in the same row
+                    var setting = SettingsGrid.Children.Cast<UIElement>()
+                                    .Where(col => Grid.GetColumn(col) == 0)
+                                        .Where(row => Grid.GetRow(row) == Grid.GetRow(action));
+                    Label txt = (Label)setting.ElementAt(0);
+
+                    library.ConfigureSetting(txt.Content.ToString());
+                };
+                SettingsGrid.Children.Add(action);
 
                 // Line break check
                 if (y >= SettingsGrid.RowDefinitions.Count)

@@ -101,10 +101,8 @@ namespace MyPictures
             {
                 // Create and add new Google Drive server instance to list.
                 this.servers.Add(new GoogleDriveServer("google", "/", GoogleInstance));
-            } else {
-                // TODO: Redirect for now until UI feature..
-                GoogleInstance.Redirect();
             }
+
         }
 
         protected void LoadDatabase()
@@ -190,5 +188,52 @@ namespace MyPictures
             });
         }
 
+        internal List<Tuple<String, String, String>> GetSettings()
+        {
+            // Return value -- 3 strings: Name, Description and Action
+            List<Tuple<String, String, String>> Settings = new List<Tuple<String, String, String>>();
+
+            // Locate state of Google Drive
+            this.providers.ForEach(provider => {
+
+                // For each provider add their name and the functionality of the button to the list
+                Settings.Add(new Tuple<string, String, string>(
+                    provider.Name,
+                    "Manage your connection to " + provider.Name + " cloud storage",
+                    provider.IsConnected() ? "Disconnect" : "Connect"
+                ));
+            });
+
+            return Settings;
+        }
+
+
+        internal void ConfigureSetting(String setting)
+        {
+            // Toggle the given provider
+            Console.WriteLine("Checking setting: " + setting);
+            ToggleProvider(setting);
+        }
+
+        private void ToggleProvider(String service)
+        {
+            this.providers.ForEach(provider =>
+            {
+                Console.WriteLine("Provider: " + provider.Name + " checked up against: " + service);
+                if(provider.Name == service)
+                {
+                    if (provider.IsConnected())
+                    {
+                        // Create and add new Google Drive server instance to list.
+                        //this.servers.Add(new GoogleDriveServer("google", "/", provider));
+                        // TODO insert disconnect drive
+                    }
+                    else
+                    {
+                        provider.Redirect();
+                    }
+                }
+            });
+        }
     }
 }
