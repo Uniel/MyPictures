@@ -27,6 +27,14 @@ namespace MyPictures.Files
 
         public Stream Stream()
         {
+            // Decrypt stream if encrypted.
+            if (this.Data != null && this.Data.Encrypted == 1)
+            {
+                Stream stream = this.Server.GetMediaStream(this.path);
+                return Library.manager.Decrypt(stream);
+            }
+
+            // Return the raw media stream.
             return this.Server.GetMediaStream(this.path);
         }
 
@@ -46,7 +54,7 @@ namespace MyPictures.Files
             BitmapMetadata data = this.RetrieveMetadata(frame);
 
             // Return, if no orientation metadata - fix for PNG exceptions
-            if (!(data.ContainsQuery("System.Photo.Orientation")))
+            if (data == null || ! data.ContainsQuery("System.Photo.Orientation"))
             {
                 return frame;
             }

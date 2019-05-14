@@ -50,24 +50,24 @@ namespace MyPictures.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RijndaelKey {
+        public string EncryptionKey {
             get {
-                return ((string)(this["RijndaelKey"]));
+                return ((string)(this["EncryptionKey"]));
             }
             set {
-                this["RijndaelKey"] = value;
+                this["EncryptionKey"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RijndaelIV {
+        public string EncryptionVector {
             get {
-                return ((string)(this["RijndaelIV"]));
+                return ((string)(this["EncryptionVector"]));
             }
             set {
-                this["RijndaelIV"] = value;
+                this["EncryptionVector"] = value;
             }
         }
     }

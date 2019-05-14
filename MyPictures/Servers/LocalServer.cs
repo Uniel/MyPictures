@@ -32,7 +32,7 @@ namespace MyPictures.Servers
 
         public override Stream GetMediaStream(string path)
         {
-            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
         public override string UploadMediaStream(string path, Stream stream)

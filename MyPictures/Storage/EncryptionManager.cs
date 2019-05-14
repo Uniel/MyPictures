@@ -1,123 +1,108 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 
-namespace MyPictures.Encryption
+namespace MyPictures.Storage
 {
     class EncryptionManager
     {
-        private byte[] key, iv;
+        protected byte[] key, vector;
+
+        protected SymmetricAlgorithm algorithm;
 
         public EncryptionManager()
         {
-            // Load existing Rijndael key or create new.
-            if (this.RijndaelExistance())
+            // Create new Rijndae manager instance.
+            this.algorithm = new RijndaelManaged();
+
+            // Load in credentails from settings. 
+            this.LoadCredentails();
+        }
+
+        protected void LoadCredentails()
+        {
+            // Read in key, value pair byte array from settings.
+            this.key = System.Text.Encoding.ASCII.GetBytes(Properties.Settings.Default.EncryptionKey);
+            this.vector = System.Text.Encoding.ASCII.GetBytes(Properties.Settings.Default.EncryptionVector);
+
+            // Check if manager key or vector is invalid.
+            if (this.key == null || this.key.Length == 0 || this.vector == null || this.vector.Length == 0)
             {
-                this.LoadRijndael();
+                // Generate new key, vector pair.
+                this.GenerateCredentials();
             } else {
-                this.CreateRijndael();
+                // Set credentails on manager.
+                this.algorithm.Key = this.key;
+                this.algorithm.IV = this.vector;
             }
         }
 
-        private void SaveRijndael()
+        protected void GenerateCredentials()
         {
-            // Cast the key and iv to strings and insert into settings.
-            Properties.Settings.Default.RijndaelKey = System.Text.Encoding.ASCII.GetString(key);
-            Properties.Settings.Default.RijndaelIV = System.Text.Encoding.ASCII.GetString(iv);
+            // Generate new key and vector.
+            this.algorithm.GenerateKey();
+            this.algorithm.GenerateIV();
 
-            // Save settings file to storage.
+            // Save algorithm credentials on object.
+            this.key = this.algorithm.Key;
+            this.vector = this.algorithm.IV;
+
+            // Save generated key and vector to settings.
+            Properties.Settings.Default.EncryptionKey = System.Text.Encoding.ASCII.GetString(this.key);
+            Properties.Settings.Default.EncryptionVector = System.Text.Encoding.ASCII.GetString(this.vector);
             Properties.Settings.Default.Save();
         }
 
-        private void LoadRijndael()
+        public Stream Encrypt(Stream message)
         {
-            // Load keys into workspace and cast to byte arrays.
-            key = System.Text.Encoding.ASCII.GetBytes(Properties.Settings.Default.RijndaelKey);
-            iv = System.Text.Encoding.ASCII.GetBytes(Properties.Settings.Default.RijndaelIV);
-        }
+            // Create byte array and insert stream contents.
+            byte[] data = new byte[Convert.ToInt32(message.Length)];
+            message.Read(data, 0, Convert.ToInt32(message.Length));
 
-        private bool RijndaelExistance()
-        {
-            // Load key from setting properties.
-            string LoadedKey = Properties.Settings.Default.RijndaelKey;
+            // Encrypt the byte array contents.
+            data = this.EncryptBytes(data);
 
-            // Return out if keys was not loaded in.
-            if (LoadedKey == null || LoadedKey == "") return false;
-
-            // Load initialization vector from settings.
-            string LoadedIV = Properties.Settings.Default.RijndaelKey;
-            if (LoadedIV == null || LoadedIV == "") return false;
-
-            // Return key exists.
-            return true;
-        }
-
-        private void CreateRijndael()
-        {
-            // Create manager and generate key and initialization vector.
-            using (var rijndael = new RijndaelManaged())
-            {
-                // Generate and store key+IV in class variables.
-                rijndael.GenerateKey();
-                rijndael.GenerateIV();
-                key = rijndael.Key;
-                iv = rijndael.IV;
-            }
-
-            // Save generated details to storage.
-            this.SaveRijndael();
+            // Convert the byte array to a stream.
+            return new MemoryStream(data);
         }
 
         public byte[] EncryptBytes(byte[] message)
         {
-            // Return out if message is empty.
-            if ((message == null) || (message.Length == 0))
-            {
-                return message;
-            }
-
-            // Create manager and set keys.
-            var rijndael = new RijndaelManaged();
-            {
-                rijndael.Key = key;
-                rijndael.IV = iv;
-            }
-
-            // Create streams and encrypters.
             using (var stream = new MemoryStream())
-            using (var encryptor = rijndael.CreateEncryptor())
+            using (var encryptor = this.algorithm.CreateEncryptor())
             using (var encrypt = new CryptoStream(stream, encryptor, CryptoStreamMode.Write))
             {
-                encrypt.Write(message, 0, message.Length);
+                encrypt.Write(message, 0, Convert.ToInt32(message.Length));
                 encrypt.FlushFinalBlock();
+
                 return stream.ToArray();
             }
+        }
+
+        public Stream Decrypt(Stream message)
+        {
+            // Create byte array and insert stream contents.
+            byte[] data = new byte[Convert.ToInt32(message.Length)];
+            message.Read(data, 0, Convert.ToInt32(message.Length));
+
+            // Decrypt the byte array contents.
+            data = this.DecryptBytes(data);
+
+            // Convert the byte array to a stream.
+            return new MemoryStream(data);
         }
 
         public byte[] DecryptBytes(byte[] message)
         {
-            // Return out if message is empty.
-            if ((message == null) || (message.Length == 0))
-            {
-                return message;
-            }
-
-            // Create manager and set keys.
-            var rijndael = new RijndaelManaged();
-            {
-                rijndael.Key = key;
-                rijndael.IV = iv;
-            }
-
-            // Create streams and encrypters.
             using (var stream = new MemoryStream())
-            using (var decryptor = rijndael.CreateDecryptor())
-            using (var encrypt = new CryptoStream(stream, decryptor, CryptoStreamMode.Write))
+            using (var decrypter = this.algorithm.CreateDecryptor())
+            using (var decrypt = new CryptoStream(stream, decrypter, CryptoStreamMode.Write))
             {
-                encrypt.Write(message, 0, message.Length);
-                encrypt.FlushFinalBlock();
+                decrypt.Write(message, 0, Convert.ToInt32(message.Length));
+                decrypt.FlushFinalBlock();
+
                 return stream.ToArray();
             }
         }
-
     }
 }

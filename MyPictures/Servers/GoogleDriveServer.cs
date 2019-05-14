@@ -36,15 +36,10 @@ namespace MyPictures.Servers
             dynamic parsed = JObject.Parse(rawResponse);
 
             // Cast files array to list of dynamics.
-            List<dynamic> files;
-            try
+            List<dynamic> files = new List<dynamic>();
+            if (parsed != null && parsed.files != null)
             {
-                 files = parsed.files.ToObject<List<dynamic>>();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("An error occourred when trying to fetch pictures from Drive, check authentication settings.");
-                return new List<string>();
+                files = parsed.files.ToObject<List<dynamic>>();
             }
 
             // Map file objects into file names and cast to list.
