@@ -102,7 +102,6 @@ namespace MyPictures
                 // Create and add new Google Drive server instance to list.
                 this.servers.Add(new GoogleDriveServer("google", "/", GoogleInstance));
             }
-
         }
 
         protected void LoadDatabase()
@@ -211,27 +210,39 @@ namespace MyPictures
         internal void ConfigureSetting(String setting)
         {
             // Toggle the given provider
-            Console.WriteLine("Checking setting: " + setting);
             ToggleProvider(setting);
         }
 
         private void ToggleProvider(String service)
         {
+            Boolean removed = false;
             this.providers.ForEach(provider =>
             {
-                Console.WriteLine("Provider: " + provider.Name + " checked up against: " + service);
                 if(provider.Name == service)
                 {
                     if (provider.IsConnected())
                     {
+                        Console.WriteLine("Disconnecting to google");
                         provider.Disconnect();
+                        removed = true;
+                        Console.WriteLine("Done");
                     }
                     else
                     {
+                        Console.WriteLine("Connecting to google");
                         provider.Redirect();
+                        removed = false;
+                        Console.WriteLine("Done");
+                        //LoadProviders();
+                        Console.WriteLine("Cleanup");
                     }
                 }
             });
+            if (removed)
+            {
+                providers.Remove(providers.Single(n => n.Name == service));
+                servers.Remove(servers.Single(s => s.GetName() == service));
+            }
         }
     }
 }

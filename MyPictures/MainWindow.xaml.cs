@@ -22,36 +22,52 @@ namespace MyPictures
             this.library = new Library();
             this.library.Initialize();
 
-            // Instansiate grids
+            // Instansiate panes (grid containers)
             Grid ImagePane = this.FindName("ImagePane") as Grid;
             Grid AlbumPane = this.FindName("AlbumPane") as Grid;
             Grid SettingsPane = this.FindName("SettingsPane") as Grid;
             Grid SelectedAlbumPane = this.FindName("SelectedAlbumPane") as Grid;
 
-            // Build menu bar
+            // Instansiate grids contained in panes
+            Grid ImagesGrid = this.FindName("ImageGrid") as Grid;
+            Grid AlbumGrid = this.FindName("AlbumGrid") as Grid;
+            Grid AlbumImageGrid = this.FindName("AlbumImageGrid") as Grid;
+            Grid SettingsGrid = this.FindName("SettingsGrid") as Grid;
+
+            // Build menu bar - Photos overview
             ((Grid)this.FindName("PhotosButton")).MouseDown += (s, e) => {
                 this.ImagePane.Visibility = Visibility.Visible;
                 this.AlbumPane.Visibility = Visibility.Hidden;
                 this.SettingsPane.Visibility = Visibility.Hidden;
                 this.SelectedAlbumPane.Visibility = Visibility.Hidden;
             };
+            // Albums
             ((Grid)this.FindName("AlbumsButton")).MouseDown += (s, e) => {
+                PopulateAlbums();
+
                 this.ImagePane.Visibility = Visibility.Hidden;
                 this.AlbumPane.Visibility = Visibility.Visible;
                 this.SettingsPane.Visibility = Visibility.Hidden;
                 this.SelectedAlbumPane.Visibility = Visibility.Hidden;
             };
+            // Settings list
             ((Grid)this.FindName("SettingsButton")).MouseDown += (s, e) => {
+                // Refresh the settings
+                SettingsGrid.Children.Clear();
                 this.ImagePane.Visibility = Visibility.Hidden;
                 this.AlbumPane.Visibility = Visibility.Hidden;
                 this.SettingsPane.Visibility = Visibility.Visible;
                 this.SelectedAlbumPane.Visibility = Visibility.Hidden;
+                PopulateSettings();
             };
 
-            // Find picture grid element.
-            Grid ImagesGrid = this.FindName("ImageGrid") as Grid;
-            int x = 0, y = 0;
+            // Generate content for photo overview grid
+            PopulatePhotos();
+        }
 
+        private void PopulatePhotos()
+        {
+            int x = 0; int y = 0;
             // Loop through the whole library.
             this.library.GetLibrary().ForEach(generic => {
                 // Create new extended image source.
@@ -65,7 +81,7 @@ namespace MyPictures
                 image.MouseDown += (s, e) => {
                     // Enable preview and set full image source.
                     this.PreviewGrid.Visibility = Visibility.Visible;
-                    this.Preview.Source = ((ExtendedSource) s).Media.LoadSource();
+                    this.Preview.Source = ((ExtendedSource)s).Media.LoadSource();
 
                     // Hide preview when clicking outside image area.
                     this.PreviewGrid.MouseDown += (sender, exception) => {
@@ -74,27 +90,24 @@ namespace MyPictures
                 };
 
                 // Add image to grid.
-                ImagesGrid.Children.Add(image);
+                this.ImageGrid.Children.Add(image);
 
                 // Go to next column at end of rows
-                if (x == ImagesGrid.ColumnDefinitions.Count)
+                if (x == this.ImageGrid.ColumnDefinitions.Count)
                 {
                     x = 0;
                     y++;
-                    if (y >= ImagesGrid.RowDefinitions.Count)
+                    if (y >= this.ImageGrid.RowDefinitions.Count)
                     {
-                        ImagesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                        this.ImageGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                     }
                 }
             });
+        }
 
-            // List albums in the albums section
-            Grid AlbumGrid = this.FindName("AlbumGrid") as Grid;
-            Grid AlbumImageGrid = this.FindName("AlbumImageGrid") as Grid;
-            // Reset row/col variables
-            x = 0; y = 0;
-
-            // Get the albums from the library
+        private void PopulateAlbums()
+        {
+            int x = 0; int y = 0;
             this.library.GetAlbums().ForEach(albumpath => {
                 // Generate a label for each found directory
                 Button txt = new Button();
@@ -134,11 +147,11 @@ namespace MyPictures
                         AlbumImageGrid.Children.Add(image);
 
                         // Go to next column at end of rows
-                        if (SelectedAlbumX == ImagesGrid.ColumnDefinitions.Count)
+                        if (SelectedAlbumX == ImageGrid.ColumnDefinitions.Count)
                         {
                             SelectedAlbumX = 0;
                             SelectedAlbumY++;
-                            if (SelectedAlbumY >= ImagesGrid.RowDefinitions.Count)
+                            if (SelectedAlbumY >= ImageGrid.RowDefinitions.Count)
                             {
                                 AlbumImageGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                             }
@@ -165,11 +178,12 @@ namespace MyPictures
                     }
                 }
             });
+        }
 
-            // List albums in the albums section
-            Grid SettingsGrid = this.FindName("SettingsGrid") as Grid;
-            x = 0; y = 0;
-
+        private void PopulateSettings()
+        {
+            SettingsGrid.Children.Clear();
+            int y = 0;
             // Set the settings
             this.library.GetSettings().ForEach(Setting => {
                 // Generate a label for setting name and description
@@ -203,8 +217,15 @@ namespace MyPictures
                                     .Where(col => Grid.GetColumn(col) == 0)
                                         .Where(row => Grid.GetRow(row) == Grid.GetRow(action));
                     Label txt = (Label)setting.ElementAt(0);
-
+                    // Clear settings page
+                    SettingsGrid.Children.Clear();
+                    
+                    // Call library for setting edit
                     library.ConfigureSetting(txt.Content.ToString());
+
+                    // Refresh UI
+                    // SettingsGrid.InvalidateVisual();
+                    PopulateSettings();
                 };
                 SettingsGrid.Children.Add(action);
 
@@ -244,6 +265,7 @@ namespace MyPictures
             });
         }
     }
+
 }
 
 
