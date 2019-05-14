@@ -69,17 +69,17 @@ namespace MyPictures.Encryption
 
         public byte[] EncryptBytes(byte[] message)
         {
+            // Return out if message is empty.
+            if ((message == null) || (message.Length == 0))
+            {
+                return message;
+            }
+
             // Create manager and set keys.
             var rijndael = new RijndaelManaged();
             {
                 rijndael.Key = key;
                 rijndael.IV = iv;
-            }
-
-            // Return out if message is empty.
-            if ((message == null) || (message.Length == 0))
-            {
-                return message;
             }
 
             // Create streams and encrypters.
@@ -95,17 +95,17 @@ namespace MyPictures.Encryption
 
         public byte[] DecryptBytes(byte[] message)
         {
+            // Return out if message is empty.
+            if ((message == null) || (message.Length == 0))
+            {
+                return message;
+            }
+
             // Create manager and set keys.
             var rijndael = new RijndaelManaged();
             {
                 rijndael.Key = key;
                 rijndael.IV = iv;
-            }
-
-            // Return out if message is empty.
-            if ((message == null) || (message.Length == 0))
-            {
-                return message;
             }
 
             // Create streams and encrypters.
