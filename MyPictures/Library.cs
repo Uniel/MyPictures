@@ -224,9 +224,7 @@ namespace MyPictures
                 {
                     if (provider.IsConnected())
                     {
-                        // Create and add new Google Drive server instance to list.
-                        //this.servers.Add(new GoogleDriveServer("google", "/", provider));
-                        // TODO insert disconnect drive
+                        provider.Disconnect();
                     }
                     else
                     {

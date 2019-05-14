@@ -119,6 +119,12 @@ namespace MyPictures.Auth
             Properties.Settings.Default.Save();
         }
 
+        public void Disconnect()
+        {
+            Properties.Settings.Default[this.Name + "Provider"] = "";
+            Properties.Settings.Default.Save();
+        }
+
         abstract protected string GetRedirectAddress();
 
         abstract protected string GetAuthorizationAddress(string code, string type);
