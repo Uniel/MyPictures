@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MyPictures.App" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyPictures.Library" Collapsed="true">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQABQAAAQBAAAAAQAAAAAAxEAAIQAAARAAgAAA=</HashCode>
+      <FileName>Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.MainWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyPictures.Auth.GoogleProvider" Collapsed="true">
+    <Position X="3.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAACAAAAAAgABQAAAAAACAAAAAABAIAACA=</HashCode>
+      <FileName>Auth\GoogleProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Auth.OAuthAuthorization" Collapsed="true">
+    <Position X="6" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAgAAAAAAAgAQAAAgCAAAAAAAA=</HashCode>
+      <FileName>Auth\OAuthProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Auth.OAuthProvider" Collapsed="true">
+    <Position X="3.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQAAAEBACABAAEAAADQAAAAAACAAAAAAAAIAAAA=</HashCode>
+      <FileName>Auth\OAuthProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Files.ExtendedSource" Collapsed="true">
+    <Position X="11.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Files\ExtendedSource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Files.GenericImage" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAQAAAAAAAAAAAAAAAAQAAAEQA=</HashCode>
+      <FileName>Files\GenericImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Files.GenericMedia" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAASCAAAAAALCBAAAAAAQgAAFQA=</HashCode>
+      <FileName>Files\GenericMedia.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Properties.Resources" Collapsed="true">
+    <Position X="9.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Properties.Settings" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAEAAAAIEAAAAIACAAAABAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Settings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Servers.GoogleDriveServer" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAACAAABAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\GoogleDriveServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Servers.LocalServer" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACgAACAAABAAAhAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\LocalServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Servers.Server" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAhQACAAQBAAAAEAAAAAAAAAEAAAEEAACAAAABAA=</HashCode>
+      <FileName>Servers\Server.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Storage.Database" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAABAAAABAIAAAAAAAAAAAgAEIAAAAAA=</HashCode>
+      <FileName>Storage\Database.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Storage.MediaData" Collapsed="true">
+    <Position X="11.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAiAIAACAACAQAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Storage\MediaData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Storage.Thumbnailer" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAACAAAAAAAAAgAAAAAAAAAAAAAAAAAAAEEAAAI=</HashCode>
+      <FileName>Storage\Thumbnailer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Encryption.EncryptionManager" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAEAAAAAAAAECAAAAAAAAIAAAAAAAAEAIAA=</HashCode>
+      <FileName>Storage\EncryptionManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Utils.FileValidator" Collapsed="true">
+    <Position X="6" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAACAAAAAAAAAAgAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils\FileValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Utils.PictureRotator" Collapsed="true">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils\PictureRotator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPictures.Utils.Secrets" Collapsed="true">
+    <Position X="11.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils\Secrets.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
