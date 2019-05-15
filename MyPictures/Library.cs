@@ -1,21 +1,22 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using MyPictures.Auth;
 using MyPictures.Files;
 using MyPictures.Servers;
 using MyPictures.Storage;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Threading;
-using MyPictures.Encryption;
-using System.Linq;
 
 namespace MyPictures
 {
     class Library
     {
+        public static EncryptionManager manager = new EncryptionManager();
+
         public LocalServer local;
-        protected List<Server> servers = new List<Server>();
-        protected List<OAuthProvider> providers = new List<OAuthProvider>();
+        public List<Server> servers = new List<Server>();
+        public List<OAuthProvider> providers = new List<OAuthProvider>();
 
         protected List<string> paths = new List<string>();
         protected List<GenericMedia> media = new List<GenericMedia>();
@@ -26,26 +27,22 @@ namespace MyPictures
 
         public void Initialize()
         {
-            // Create encryption module.
-            EncryptionManager encryptor = new EncryptionManager();
-
             // Load user server config.
             string path = Properties.Settings.Default.Path;
             path = Environment.ExpandEnvironmentVariables(path);
+
+            // Clear the server list.
+            this.servers.Clear();
 
             // Initialize local server.
             this.local = new LocalServer("default", path);
             this.servers.Add(this.local);
 
-            // Create thumbnails directory on local server. 
+            // Create thumbnails directory on local server.
             this.local.CreateThumbnailsDirectory();
 
             // Load external providers and servers.
             this.LoadProviders();
-
-            // Create database and connect.
-            this.database = new Database();
-            this.database.Connect();
 
             // Load the full library.
             this.LoadLibrary();
@@ -53,7 +50,6 @@ namespace MyPictures
 
         public List<GenericMedia> GetLibrary()
         {
-            this.media.ForEach(m => Console.WriteLine(m.GetPath()));
             return this.media;
         }
 
@@ -62,8 +58,7 @@ namespace MyPictures
             // Go through the media list and return pictures in the album path provided
             return this.media.Where(media =>
             {
-                //Console.WriteLine(System.IO.Path.GetDirectoryName(media.GetPath()));
-                return System.IO.Path.GetDirectoryName(media.GetPath()) == AlbumPath;
+                return Path.GetDirectoryName(media.GetPath()) == AlbumPath;
             }).ToList();
         }
 
@@ -72,7 +67,7 @@ namespace MyPictures
             // Reset media lists.
             this.paths.Clear();
             this.media.Clear();
-
+            
             // Loop though the server connections.
             this.servers.ForEach(server =>
             {
@@ -82,7 +77,7 @@ namespace MyPictures
                 // Add the image generics to library.
                 this.media.AddRange(server.GetMediaGenerics());
             });
-
+            
             // Load and clean the database.
             this.LoadDatabase();
         }
@@ -95,6 +90,9 @@ namespace MyPictures
 
         protected void LoadProviders()
         {
+            // Clear providers list.
+            this.providers.Clear();
+
             // Load Google Provider.
             string GoogleSettings = Properties.Settings.Default.GoogleProvider;
             GoogleProvider GoogleInstance = new GoogleProvider(GoogleSettings);
@@ -105,19 +103,27 @@ namespace MyPictures
             {
                 // Create and add new Google Drive server instance to list.
                 this.servers.Add(new GoogleDriveServer("google", "/", GoogleInstance));
-            } else {
-                // TODO: Redirect for now until UI feature..
-                GoogleInstance.Redirect();
             }
         }
 
         protected void LoadDatabase()
         {
+            // Disconnect from database if connected.
+            if (this.database != null) this.database.Disconnect();
+
+            // Create database and connect.
+            this.database = new Database();
+            this.database.Connect();
+
+            // Clear database paths.
+            this.dbPaths.Clear();
+
             // Get database media reader and prepare paths key-value pair.
             SQLiteDataReader reader = this.database.RetrieveMedia();
 
             // Keep reading while data is available.
-            while (reader.Read()) {
+            while (reader.Read())
+            {
                 // Create new media data instance.
                 MediaData data = new MediaData(reader);
 
@@ -140,7 +146,31 @@ namespace MyPictures
                 .ForEach(media => {
                     // Insert media into database.
                     this.database.InsertMedia(media);
-                    media.Data = new MediaData(this.database.RetrieveMedia(media));
+
+                    // Retrieve the inserted media reader object.
+                    reader = this.database.RetrieveMedia(media);
+                    reader.Read();
+
+                    // Create new media data instance on media.
+                    media.Data = new MediaData(reader);
+
+                    // Encrypt if from local server.
+                    if (media.Server is LocalServer)
+                    {
+                        // Get the media stream for the media path.
+                        Stream file = media.Server.GetMediaStream(media.GetPath());
+
+                        // Encrypt the contents and close file connection.
+                        Stream contents = Library.manager.Encrypt(file);
+                        file.Close();
+
+                        // Upload the encrypted media to the server.
+                        media.Server.UploadMediaStream(media.GetPath(), contents);
+
+                        // Enable encrypted state and save to database.
+                        media.Data.Encrypted = 1;
+                        this.database.UpdateMedia(media.Data);
+                    }
                 });
 
             // Create new thumbnail generator for local server.
@@ -149,17 +179,55 @@ namespace MyPictures
 
             // Generate thumbnail for all media items.
             this.media.ForEach(media => {
+                // Begin the caller invoker for each media.
                 IAsyncResult created = caller.BeginInvoke(media, null, null);
                 created.AsyncWaitHandle.WaitOne();
-                Boolean returnValue = caller.EndInvoke(created);
-                if (! returnValue)
+
+                // Save thumbnail if action was successful.
+                if (caller.EndInvoke(created))
                 {
-                    Console.WriteLine(media.Data.Thumbnail);
+                    // Update database with new thumbnail.
                     this.database.UpdateMedia(media.Data);
-                    media.Data = new MediaData(this.database.RetrieveMedia(media));
+
+                    // Retrieve the updated media reader object.
+                    reader = this.database.RetrieveMedia(media);
+                    reader.Read();
+
+                    // Create new media data instance on media.
+                    media.Data = new MediaData(reader);
                 }
             });
         }
+        
+        public void ToggleProvider(string service)
+        {
+            // Find connection for passed service.
+            OAuthProvider connection = this.providers.Find(provider => provider.Name == service);
 
+            // Check if not connected to provider.
+            if (! connection.IsConnected())
+            {
+                // Redirect to the authorization page.
+                bool connected = connection.Redirect();
+
+                // Reload library and provider if connected.
+                if (connected)
+                {
+                    connection.Initialize(service);
+                    this.Initialize();
+                }
+
+                return;
+            }
+            
+            // Remove the service server from the list.
+            this.servers.Remove(this.servers.Find(server => server.GetName() == service));
+
+            // Disconnect from provider and return out.
+            connection.Disconnect();
+
+            // Reload the library.
+            this.Initialize();
+        }
     }
 }

@@ -1,17 +1,11 @@
-﻿using MyPictures.Files;
-using MyPictures.Utils;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using MyPictures.Files;
+using MyPictures.Utils;
 using MyPictures.Servers;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Threading;
-using System.IO;
 
 namespace MyPictures.Storage
 {
@@ -24,7 +18,7 @@ namespace MyPictures.Storage
             this.server = server;
         }
 
-        public Boolean Process(GenericMedia source)
+        public bool Process(GenericMedia source)
         {
             // Check and load thumbnail if exists.
             if (this.Exists(source))
@@ -37,7 +31,7 @@ namespace MyPictures.Storage
             this.Generate(source);
             return true;
         }
-        public delegate Boolean AsyncMethodCaller(GenericMedia source);
+        public delegate bool AsyncMethodCaller(GenericMedia source);
 
         public void Load(GenericMedia source)
         {
@@ -110,6 +104,7 @@ namespace MyPictures.Storage
         {
             // Get thumbnail path from source.
             string path = this.MediaPath(source);
+
             // Check that path is not null and file exists.
             return path != null && this.server.FileExists(path);
         }

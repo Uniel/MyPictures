@@ -26,6 +26,12 @@ namespace MyPictures.Storage
             this.Setup();
         }
 
+        public void Disconnect()
+        {
+            this.connection.Close();
+            GC.Collect();
+        }
+
         public void Setup()
         {
             // Define base media table schema.
@@ -36,6 +42,7 @@ namespace MyPictures.Storage
                 "path VARCHAR(255) NOT NULL," +
                 "server VARCHAR(255) NOT NULL," +
                 "thumbnail VARCHAR(255)," +
+                "encrypted INTEGER DEFAULT 0," +
                 "created_at TEXT NOT NULL," +
                 "updated_at TEXT NOT NULL" +
             ")";
@@ -78,10 +85,11 @@ namespace MyPictures.Storage
         {
             // Prepare command object and query.
             SQLiteCommand cmd = new SQLiteCommand(null, this.connection);
-            cmd.CommandText = "UPDATE media SET name = @name, path = @path, server = @server, thumbnail = @thumbnail, updated_at = @updated_at WHERE name = @Wname AND path = @Wpath AND server = @Wserver";
+            cmd.CommandText = "UPDATE media SET name = @name, path = @path, server = @server, encrypted = @encrypted, thumbnail = @thumbnail, updated_at = @updated_at WHERE name = @Wname AND path = @Wpath AND server = @Wserver";
             cmd.Parameters.Add(new SQLiteParameter("@name", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@path", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@server", DbType.String, 255));
+            cmd.Parameters.Add(new SQLiteParameter("@encrypted", DbType.Int32));
             cmd.Parameters.Add(new SQLiteParameter("@thumbnail", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@updated_at", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@Wname", DbType.String, 255));
@@ -93,11 +101,12 @@ namespace MyPictures.Storage
             cmd.Parameters[0].Value = data.Name;
             cmd.Parameters[1].Value = data.Path;
             cmd.Parameters[2].Value = data.Server;
-            cmd.Parameters[3].Value = data.Thumbnail;
-            cmd.Parameters[4].Value = DateTime.Now.ToString("u");
-            cmd.Parameters[5].Value = data.Name;
-            cmd.Parameters[6].Value = data.Path;
-            cmd.Parameters[7].Value = data.Server;
+            cmd.Parameters[3].Value = data.Encrypted;
+            cmd.Parameters[4].Value = data.Thumbnail;
+            cmd.Parameters[5].Value = DateTime.Now.ToString("u");
+            cmd.Parameters[6].Value = data.Name;
+            cmd.Parameters[7].Value = data.Path;
+            cmd.Parameters[8].Value = data.Server;
 
             // Execute the query.
             cmd.ExecuteNonQuery();
@@ -107,10 +116,11 @@ namespace MyPictures.Storage
         {
             // Prepare command object and query.
             SQLiteCommand cmd = new SQLiteCommand(null, this.connection);
-            cmd.CommandText = "INSERT INTO media (name, path, server, thumbnail, created_at, updated_at) VALUES (@name, @path, @server, @thumbnail, @created_at, @updated_at)";
+            cmd.CommandText = "INSERT INTO media (name, path, server, encrypted, thumbnail, created_at, updated_at) VALUES (@name, @path, @server, @encrypted, @thumbnail, @created_at, @updated_at)";
             cmd.Parameters.Add(new SQLiteParameter("@name", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@path", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@server", DbType.String, 255));
+            cmd.Parameters.Add(new SQLiteParameter("@encrypted", DbType.Int32));
             cmd.Parameters.Add(new SQLiteParameter("@thumbnail", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@created_at", DbType.String, 255));
             cmd.Parameters.Add(new SQLiteParameter("@updated_at", DbType.String, 255));
@@ -120,16 +130,17 @@ namespace MyPictures.Storage
             string now = DateTime.Now.ToString("u");
             string created = media.RetrieveMetadata(media.LoadSource()).DateTaken;
 
-            // Determine creation date to be useC:\Users\Andreas\source\repos\MyPictures\MyPictures\Storage\Database.csd.
+            // Determine creation date to be used.
             string date = created == null ? now : DateTime.Parse(created).ToString("u");
 
             // Add data to prepared parameters.
             cmd.Parameters[0].Value = media.GetName();
             cmd.Parameters[1].Value = media.GetPath();
             cmd.Parameters[2].Value = media.Server.GetName();
-            cmd.Parameters[3].Value = media.Thumbnail != null ? media.Thumbnail.GetPath() : null;
-            cmd.Parameters[4].Value = date;
-            cmd.Parameters[5].Value = now;
+            cmd.Parameters[3].Value = media.Data != null ? media.Data.Encrypted : 0;
+            cmd.Parameters[4].Value = media.Thumbnail != null ? media.Thumbnail.GetPath() : null;
+            cmd.Parameters[5].Value = date;
+            cmd.Parameters[6].Value = now;
 
             // Execute the query.
             cmd.ExecuteNonQuery();

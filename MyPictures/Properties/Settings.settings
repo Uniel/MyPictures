@@ -8,10 +8,10 @@
     <Setting Name="GoogleProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="RijndaelKey" Type="System.String" Scope="User">
+    <Setting Name="EncryptionKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="RijndaelIV" Type="System.String" Scope="User">
+    <Setting Name="EncryptionVector" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

@@ -1,18 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using MyPictures.Files;
-using MyPictures.Utils;
-using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using System.Drawing;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using MyPictures.Auth;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using System.Text;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
 
 namespace MyPictures.Servers
 {
@@ -36,15 +29,10 @@ namespace MyPictures.Servers
             dynamic parsed = JObject.Parse(rawResponse);
 
             // Cast files array to list of dynamics.
-            List<dynamic> files;
-            try
+            List<dynamic> files = new List<dynamic>();
+            if (parsed != null && parsed.files != null)
             {
-                 files = parsed.files.ToObject<List<dynamic>>();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("An error occourred when trying to fetch pictures from Drive, check authentication settings.");
-                return new List<string>();
+                files = parsed.files.ToObject<List<dynamic>>();
             }
 
             // Map file objects into file names and cast to list.
