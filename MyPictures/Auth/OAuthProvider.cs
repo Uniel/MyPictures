@@ -42,6 +42,11 @@ namespace MyPictures.Auth
 
         public OAuthProvider(string provider)
         {
+            this.Initialize(provider);
+        }
+
+        public void Initialize(string provider)
+        {
             // Attempt to parse provider.
             try
             {
@@ -59,12 +64,13 @@ namespace MyPictures.Auth
                 {
                     this.Refresh();
                 }
-            } catch (Exception) { /* Ignore Exception */ }
+            }
+            catch (Exception) { /* Ignore Exception */ }
         }
 
         public string GetToken()
         {
-            return this.authorization.access_token;
+            return this.authorization?.access_token;
         }
 
         public bool IsConnected()
@@ -72,14 +78,22 @@ namespace MyPictures.Auth
             return this.authorization != null && this.authorization.access_token != null;
         }
 
-        public void Redirect()
+        public bool Redirect()
         {
             // Open the OAuth authorization window.
             System.Diagnostics.Process.Start(this.GetRedirectAddress());
 
             // Request authorization token from user. @wip - Replace with WPF form?
             string input = Microsoft.VisualBasic.Interaction.InputBox("Please enter in the authorization token", this.Name + " Authorization", "", 0, 0);
-            if (input != "") this.Authorize(input);
+
+            // Attempt to authorize if has input.
+            if (input != "") {
+                this.Authorize(input);
+                return true;
+            }
+
+            // Return failed redirect.
+            return false;
         }
 
         public void Refresh()
@@ -123,6 +137,8 @@ namespace MyPictures.Auth
         {
             Properties.Settings.Default[this.Name + "Provider"] = "";
             Properties.Settings.Default.Save();
+
+            this.authorization = null;
         }
 
         abstract protected string GetRedirectAddress();

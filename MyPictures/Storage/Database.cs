@@ -26,6 +26,12 @@ namespace MyPictures.Storage
             this.Setup();
         }
 
+        public void Disconnect()
+        {
+            this.connection.Close();
+            GC.Collect();
+        }
+
         public void Setup()
         {
             // Define base media table schema.

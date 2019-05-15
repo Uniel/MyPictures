@@ -15,8 +15,8 @@ namespace MyPictures
         public static EncryptionManager manager = new EncryptionManager();
 
         public LocalServer local;
-        protected List<Server> servers = new List<Server>();
-        protected List<OAuthProvider> providers = new List<OAuthProvider>();
+        public List<Server> servers = new List<Server>();
+        public List<OAuthProvider> providers = new List<OAuthProvider>();
 
         protected List<string> paths = new List<string>();
         protected List<GenericMedia> media = new List<GenericMedia>();
@@ -31,19 +31,18 @@ namespace MyPictures
             string path = Properties.Settings.Default.Path;
             path = Environment.ExpandEnvironmentVariables(path);
 
+            // Clear the server list.
+            this.servers.Clear();
+
             // Initialize local server.
             this.local = new LocalServer("default", path);
             this.servers.Add(this.local);
 
-            // Create thumbnails directory on local server. 
+            // Create thumbnails directory on local server.
             this.local.CreateThumbnailsDirectory();
 
             // Load external providers and servers.
             this.LoadProviders();
-
-            // Create database and connect.
-            this.database = new Database();
-            this.database.Connect();
 
             // Load the full library.
             this.LoadLibrary();
@@ -68,7 +67,7 @@ namespace MyPictures
             // Reset media lists.
             this.paths.Clear();
             this.media.Clear();
-
+            
             // Loop though the server connections.
             this.servers.ForEach(server =>
             {
@@ -78,7 +77,7 @@ namespace MyPictures
                 // Add the image generics to library.
                 this.media.AddRange(server.GetMediaGenerics());
             });
-
+            
             // Load and clean the database.
             this.LoadDatabase();
         }
@@ -91,6 +90,9 @@ namespace MyPictures
 
         protected void LoadProviders()
         {
+            // Clear providers list.
+            this.providers.Clear();
+
             // Load Google Provider.
             string GoogleSettings = Properties.Settings.Default.GoogleProvider;
             GoogleProvider GoogleInstance = new GoogleProvider(GoogleSettings);
@@ -106,6 +108,16 @@ namespace MyPictures
 
         protected void LoadDatabase()
         {
+            // Disconnect from database if connected.
+            if (this.database != null) this.database.Disconnect();
+
+            // Create database and connect.
+            this.database = new Database();
+            this.database.Connect();
+
+            // Clear database paths.
+            this.dbPaths.Clear();
+
             // Get database media reader and prepare paths key-value pair.
             SQLiteDataReader reader = this.database.RetrieveMedia();
 
@@ -186,63 +198,36 @@ namespace MyPictures
                 }
             });
         }
-
-        internal List<Tuple<String, String, String>> GetSettings()
+        
+        public void ToggleProvider(string service)
         {
-            // Return value -- 3 strings: Name, Description and Action
-            List<Tuple<String, String, String>> Settings = new List<Tuple<String, String, String>>();
+            // Find connection for passed service.
+            OAuthProvider connection = this.providers.Find(provider => provider.Name == service);
 
-            // Locate state of Google Drive
-            this.providers.ForEach(provider => {
-
-                // For each provider add their name and the functionality of the button to the list
-                Settings.Add(new Tuple<string, String, string>(
-                    provider.Name,
-                    "Manage your connection to " + provider.Name + " cloud storage",
-                    provider.IsConnected() ? "Disconnect" : "Connect"
-                ));
-            });
-
-            return Settings;
-        }
-
-
-        internal void ConfigureSetting(String setting)
-        {
-            // Toggle the given provider
-            ToggleProvider(setting);
-        }
-
-        private void ToggleProvider(String service)
-        {
-            Boolean removed = false;
-            this.providers.ForEach(provider =>
+            // Check if not connected to provider.
+            if (! connection.IsConnected())
             {
-                if(provider.Name == service)
+                // Redirect to the authorization page.
+                bool connected = connection.Redirect();
+
+                // Reload library and provider if connected.
+                if (connected)
                 {
-                    if (provider.IsConnected())
-                    {
-                        Console.WriteLine("Disconnecting to google");
-                        provider.Disconnect();
-                        removed = true;
-                        Console.WriteLine("Done");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Connecting to google");
-                        provider.Redirect();
-                        removed = false;
-                        Console.WriteLine("Done");
-                        //LoadProviders();
-                        Console.WriteLine("Cleanup");
-                    }
+                    connection.Initialize(service);
+                    this.Initialize();
                 }
-            });
-            if (removed)
-            {
-                providers.Remove(providers.Single(n => n.Name == service));
-                servers.Remove(servers.Single(s => s.GetName() == service));
+
+                return;
             }
+            
+            // Remove the service server from the list.
+            this.servers.Remove(this.servers.Find(server => server.GetName() == service));
+
+            // Disconnect from provider and return out.
+            connection.Disconnect();
+
+            // Reload the library.
+            this.Initialize();
         }
     }
 }

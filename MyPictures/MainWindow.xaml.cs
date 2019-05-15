@@ -40,19 +40,20 @@ namespace MyPictures
                 this.AlbumPane.Visibility = Visibility.Hidden;
                 this.SettingsPane.Visibility = Visibility.Hidden;
                 this.SelectedAlbumPane.Visibility = Visibility.Hidden;
+                PopulatePhotos();
             };
+
             // Albums
             ((Grid)this.FindName("AlbumsButton")).MouseDown += (s, e) => {
-                PopulateAlbums();
-
                 this.ImagePane.Visibility = Visibility.Hidden;
                 this.AlbumPane.Visibility = Visibility.Visible;
                 this.SettingsPane.Visibility = Visibility.Hidden;
                 this.SelectedAlbumPane.Visibility = Visibility.Hidden;
+                PopulateAlbums();
             };
+
             // Settings list
             ((Grid)this.FindName("SettingsButton")).MouseDown += (s, e) => {
-                // Refresh the settings
                 SettingsGrid.Children.Clear();
                 this.ImagePane.Visibility = Visibility.Hidden;
                 this.AlbumPane.Visibility = Visibility.Hidden;
@@ -67,8 +68,11 @@ namespace MyPictures
 
         private void PopulatePhotos()
         {
-            int x = 0; int y = 0;
+            // Clear gird.
+            this.ImageGrid.Children.Clear();
+
             // Loop through the whole library.
+            int x = 0; int y = 0;
             this.library.GetLibrary().ForEach(generic => {
                 // Create new extended image source.
                 ExtendedSource image = new ExtendedSource(generic);
@@ -95,8 +99,7 @@ namespace MyPictures
                 // Go to next column at end of rows
                 if (x == this.ImageGrid.ColumnDefinitions.Count)
                 {
-                    x = 0;
-                    y++;
+                    x = 0; y++;
                     if (y >= this.ImageGrid.RowDefinitions.Count)
                     {
                         this.ImageGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -184,8 +187,9 @@ namespace MyPictures
         {
             SettingsGrid.Children.Clear();
             int y = 0;
+
             // Set the settings
-            this.library.GetSettings().ForEach(Setting => {
+            this.GetSettings().ForEach(Setting => {
                 // Generate a label for setting name and description
                 Label name = new Label();
                 Label description = new Label();
@@ -196,6 +200,7 @@ namespace MyPictures
                 Grid.SetColumn(name, 0);
                 Grid.SetRow(name, y);
                 SettingsGrid.Children.Add(name);
+
                 // Insert Description
                 Grid.SetColumn(description, 1);
                 Grid.SetRow(description, y);
@@ -214,19 +219,21 @@ namespace MyPictures
                 {
                     // Get the setting of the first column in the same row
                     var setting = SettingsGrid.Children.Cast<UIElement>()
-                                    .Where(col => Grid.GetColumn(col) == 0)
-                                        .Where(row => Grid.GetRow(row) == Grid.GetRow(action));
+                        .Where(col => Grid.GetColumn(col) == 0)
+                        .Where(row => Grid.GetRow(row) == Grid.GetRow(action));
+
                     Label txt = (Label)setting.ElementAt(0);
+
                     // Clear settings page
                     SettingsGrid.Children.Clear();
                     
                     // Call library for setting edit
-                    library.ConfigureSetting(txt.Content.ToString());
+                    library.ToggleProvider(txt.Content.ToString());
 
                     // Refresh UI
-                    // SettingsGrid.InvalidateVisual();
                     PopulateSettings();
                 };
+
                 SettingsGrid.Children.Add(action);
 
                 // Line break check
@@ -235,6 +242,25 @@ namespace MyPictures
                     SettingsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 }
             });
+        }
+        
+        internal List<Tuple<string, string, string>> GetSettings()
+        {
+            // Return value -- 3 strings: Name, Description and Action
+            List<Tuple<string, string, string>> Settings = new List<Tuple<string, string, string>>();
+
+            // Locate state of Google Drive
+            this.library.providers.ForEach(provider => {
+
+                // For each provider add their name and the functionality of the button to the list
+                Settings.Add(new Tuple<string, string, string>(
+                    provider.Name,
+                    "Manage your connection to " + provider.Name + " cloud storage",
+                    provider.IsConnected() ? "Disconnect" : "Connect"
+                ));
+            });
+
+            return Settings;
         }
 
         private void DropPanel_Drop(object sender, DragEventArgs e)
@@ -254,14 +280,13 @@ namespace MyPictures
                 // Generate name for dropped file.
                 int index = file.LastIndexOf('\\');
                 string name = file.Substring(index + 1, file.Length - index - 1);
-                Console.WriteLine(server.GetDirectory() + "\\" + name);
 
                 // Get media stream and upload to local server.
                 Stream stream = server.GetMediaStream(file);
                 server.UploadMediaStream(server.GetDirectory() + "\\" + name, stream);
 
-                // TODO: Refresh view.
-                // TODO: Fix only possible to drop files on grid.
+                // Refresh the library.
+                this.library.Initialize();
             });
         }
     }
